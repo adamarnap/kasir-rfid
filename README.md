@@ -27,7 +27,7 @@ open your terminal, go to the directory that you will install this project, then
 ```bash
 git clone "URL Git clone this project"
 
-cd base-laravel
+cd kasir-rfid
 ```
 
 ### Install packages

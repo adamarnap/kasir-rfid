@@ -3,13 +3,21 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Master\CategoriesController;
+use App\Http\Controllers\Master\ParentsController;
+use App\Http\Controllers\Master\ProductsController;
+use App\Http\Controllers\Master\StudentsController;
+use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\Operator\HomeController;
+use App\Http\Controllers\Report\TopupController as ReportTopupController;
 use App\Http\Controllers\Settings\RoleController;
 use App\Http\Controllers\Settings\UserController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\NavigationController;
 use App\Http\Controllers\Settings\PreferenceController;
-
+use App\Http\Controllers\Report\TransactionsController as ReportTransactionsController;
+use App\Http\Controllers\RfidController;
+use App\Http\Controllers\TopupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +34,29 @@ Route::middleware('auth', 'verified')->group(function () {
     /* ---- Dashboard */
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::redirect('/', '/dashboard');
+
+    /* ---- Transaksi */
+    Route::resource('/transactions', TransactionsController::class)->names('transactions');
+
+    /* ---- Kartu RFID */
+    Route::resource('/rfid', RfidController::class)->names('rfid');
+
+    /* ---- Top Up */
+    Route::resource('/topup', TopupController::class)->names('topup');
+
+    /* ---- Master Data */
+    Route::prefix('master')->name('master.')->group(function () {
+        Route::resource('/categories', CategoriesController::class)->names('categories');
+        Route::resource('/products', ProductsController::class)->names('products');
+        Route::resource('/students', StudentsController::class)->names('students');
+        Route::resource('/parents', ParentsController::class)->names('parents');
+    });
+
+    /* ---- Laporan */
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::resource('/transactions', ReportTransactionsController::class)->names('transactions');
+        Route::resource('/topup', ReportTopupController::class)->names('topup');
+    });
 
     /* ---- My Profile */
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
