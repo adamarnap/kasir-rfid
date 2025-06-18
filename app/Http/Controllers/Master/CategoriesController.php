@@ -23,7 +23,7 @@ class CategoriesController extends Controller
         // Get data categories
         $categories = $this->categoriesService->getDataAllCategories();
         // Load View
-        return view('dashboard.index');
+        return view('master.categories.index', compact('categories'));
     }
 
     /**
@@ -39,7 +39,13 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->setRule('categories.create');
+        // Validation
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+        ]);
+        return $this->categoriesService->store($request);
     }
 
     /**

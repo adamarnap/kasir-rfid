@@ -69,25 +69,25 @@ Breadcrumbs::for('master', function (BreadcrumbTrail $trail) {
 // Master > Categories
 Breadcrumbs::for('categories', function (BreadcrumbTrail $trail) {
     $trail->parent('master');
-    $trail->push('Kategori', route('category'));
+    $trail->push('Kategori', route('master.categories.index'));
 });
 
 // Master > Products
 Breadcrumbs::for('products', function (BreadcrumbTrail $trail) {
     $trail->parent('master');
-    $trail->push('Produk', route('products'));
+    $trail->push('Produk', route('master.products.index'));
 });
 
 // Master > Students
 Breadcrumbs::for('students', function (BreadcrumbTrail $trail) {
     $trail->parent('master');
-    $trail->push('Siswa', route('students'));
+    $trail->push('Siswa', route('master.students.index'));
 });
 
 // Master > Parents
 Breadcrumbs::for('parents', function (BreadcrumbTrail $trail) {
     $trail->parent('master');
-    $trail->push('Wali Siswa', route('parents'));
+    $trail->push('Wali Siswa', route('master.parents.index'));
 });
 
 /**
@@ -102,13 +102,13 @@ Breadcrumbs::for('reports', function (BreadcrumbTrail $trail) {
 // Report > Transactions
 Breadcrumbs::for('report.transactions', function (BreadcrumbTrail $trail) {
     $trail->parent('reports');
-    $trail->push('Riwayat Transaksi', route('report.transactions'));
+    $trail->push('Riwayat Transaksi', route('report.transactions.index'));
 });
 
 // Report > TopUp
 Breadcrumbs::for('report.topup', function (BreadcrumbTrail $trail) {
     $trail->parent('reports');
-    $trail->push('Riwayat Top Up', route('report.topup'));
+    $trail->push('Riwayat Top Up', route('report.topup.index'));
 });
 
 /**
