@@ -4,15 +4,26 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Services\Master\CategoriesService;
 
 class CategoriesController extends Controller
 {
+
+    public function __construct(protected CategoriesService $categoriesService)
+    {
+        
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $this->setRule('categories.read');
+        // Get data categories
+        $categories = $this->categoriesService->getDataAllCategories();
+        // Load View
+        return view('dashboard.index');
     }
 
     /**

@@ -53,7 +53,7 @@ Route::middleware('auth', 'verified')->group(function () {
     });
 
     /* ---- Laporan */
-    Route::prefix('reports')->name('reports.')->group(function () {
+    Route::prefix('report')->name('report.')->group(function () {
         Route::resource('/transactions', ReportTransactionsController::class)->names('transactions');
         Route::resource('/topup', ReportTopupController::class)->names('topup');
     });

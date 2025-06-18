@@ -30,6 +30,86 @@ Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
     $trail->push('Dashboard', route('dashboard'));
 });
 
+/**
+ * ------------------------------------------------------------------------------------------------------------------------
+ * Transactions
+ */
+
+Breadcrumbs::for('transactions', function (BreadcrumbTrail $trail) {
+    $trail->push('Transaksi', route('transactions'));
+});
+
+/**
+ * ------------------------------------------------------------------------------------------------------------------------
+ * Topup
+ */
+
+Breadcrumbs::for('topup', function (BreadcrumbTrail $trail) {
+    $trail->push('Top Up', route('topup'));
+});
+
+/**
+ * ------------------------------------------------------------------------------------------------------------------------
+ * RFID
+ */
+
+Breadcrumbs::for('rfid', function (BreadcrumbTrail $trail) {
+    $trail->push('RFID', route('rfid'));
+});
+
+/**
+ * ------------------------------------------------------------------------------------------------------------------------
+ * Master
+ */
+
+Breadcrumbs::for('master', function (BreadcrumbTrail $trail) {
+    $trail->push('Master', 'javascript:void(0);');
+});
+
+// Master > Categories
+Breadcrumbs::for('categories', function (BreadcrumbTrail $trail) {
+    $trail->parent('master');
+    $trail->push('Kategori', route('category'));
+});
+
+// Master > Products
+Breadcrumbs::for('products', function (BreadcrumbTrail $trail) {
+    $trail->parent('master');
+    $trail->push('Produk', route('products'));
+});
+
+// Master > Students
+Breadcrumbs::for('students', function (BreadcrumbTrail $trail) {
+    $trail->parent('master');
+    $trail->push('Siswa', route('students'));
+});
+
+// Master > Parents
+Breadcrumbs::for('parents', function (BreadcrumbTrail $trail) {
+    $trail->parent('master');
+    $trail->push('Wali Siswa', route('parents'));
+});
+
+/**
+ * ------------------------------------------------------------------------------------------------------------------------
+ * Report
+ */
+
+Breadcrumbs::for('reports', function (BreadcrumbTrail $trail) {
+    $trail->push('Laporan', 'javascript:void(0);');
+});
+
+// Report > Transactions
+Breadcrumbs::for('report.transactions', function (BreadcrumbTrail $trail) {
+    $trail->parent('reports');
+    $trail->push('Riwayat Transaksi', route('report.transactions'));
+});
+
+// Report > TopUp
+Breadcrumbs::for('report.topup', function (BreadcrumbTrail $trail) {
+    $trail->parent('reports');
+    $trail->push('Riwayat Top Up', route('report.topup'));
+});
 
 /**
  * ------------------------------------------------------------------------------------------------------------------------
