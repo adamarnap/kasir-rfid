@@ -32,6 +32,20 @@ class CategoriesService
         }catch(\Exception $e){
                 return redirect()->back()->with('error', 'Gagal melakukan penambahan data ' . $e->getMessage());
         }
+    }
 
+    /* Process Update */
+    public function update($request, $id)
+    {
+        try{
+            $category = Categories::findOrFail($id);
+            $category->update([
+                'name' => $request->name,
+                'description' => $request->description
+            ]);
+            return redirect()->back()->with('success', 'Sukses melakukan perubahan data.');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Gagal melakukan perubahan data ' . $e->getMessage());
+        }
     }
 }

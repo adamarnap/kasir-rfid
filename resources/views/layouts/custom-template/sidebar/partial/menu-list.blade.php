@@ -76,10 +76,23 @@
                         * contains($urlCurrent) untuk mengecek apakah url yang sedang aktif, terdapat dalam array yang dihasilkan oleh collect($nav['child'])->pluck('url')
                         * ========================================================================================================
                         */
-                        $urlCurrent = url('/') . '/' . Request::segments()[0];
+                        $segment1 = Request::segment(1);
+                        $segment2 = Request::segment(2);
+
+                        // Cek apakah segment 1 ada
+                        if ($segment1 !== null) {
+                            $urlCurrent = url('/') . '/' . $segment1;
+
+                            if ($segment2 !== null) {
+                                $urlCurrent .= '/' . $segment2;
+                            }
+                        } else {
+                            $urlCurrent = url('/');
+                        }
+
                     @endphp
                     <li
-                        class="nav-item {{ Request::is(ltrim(parse_url($nav['url'], PHP_URL_PATH), '/')) ||collect($nav['child'])->pluck('url')->contains($urlCurrent)? 'menu-open': '' }}">
+                        class="nav-item {{ Request::is(ltrim(parse_url($nav['url'], PHP_URL_PATH), '/')) || collect($nav['child'])->pluck('url')->contains($urlCurrent)? 'menu-open': '' }}">
                         {{-- Parent Menu --}}
                         <a href="javascript: void(0);"
                             class="nav-link {{ Request::is(ltrim(parse_url($nav['url'], PHP_URL_PATH), '/')) ||collect($nav['child'])->pluck('url')->contains($urlCurrent)? 'active': '' }}">

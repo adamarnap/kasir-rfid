@@ -49,6 +49,9 @@
                                     </td>
                                 </tr>
                             @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">Tidak ada data kategori.</td>
+                                </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -58,7 +61,7 @@
     </div>
 {{-- Load Modal Add --}}
 @include('master.categories.partials.modal-add')
-{{-- Load Modal Add --}}
+{{-- Load Modal Edit --}}
 @include('master.categories.partials.modal-edit')
 @endsection
 

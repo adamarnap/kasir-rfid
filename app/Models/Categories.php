@@ -13,4 +13,13 @@ class Categories extends Model
         'name',
         'description',
     ];
+
+    /* Boot */
+    // protected static function booted()
+    // {
+    //     static::creating(function ($model) {
+    //         // Added Created By When Creating
+    //         $model->created_by = auth()->user()->id;
+    //     });
+    // }
 }

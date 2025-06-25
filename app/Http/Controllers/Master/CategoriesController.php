@@ -69,7 +69,14 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $this->setRule('categories.update');
+        // Validation
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+        ]);
+        // Process update
+        return $this->categoriesService->update($request, $id);
     }
 
     /**
@@ -77,6 +84,17 @@ class CategoriesController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $this->setRule('categories.delete');
+        try {
+            $category = $this->categoriesService->getDataAllCategories()->find($id);
+            if ($category) {
+                $category->delete();
+                return redirect()->back()->with('success', 'Sukses menghapus data.');
+            } else {
+                return redirect()->back()->with('error', 'Data tidak ditemukan.');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }
