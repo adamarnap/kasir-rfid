@@ -18,6 +18,8 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade')
                 ->comment('ID dari siswa yang memiliki akun');
+            $table->string('nisn', 20)->unique()->comment('Nomor Induk Siswa Nasional');
+            $table->string('kelas', 50)->comment('Kelas siswa');
             $table->decimal('balance', 10, 2)->default(0.00)->comment('Saldo akun siswa');
             $table->enum('status', ['active', 'inactive'])->default('active')->comment('Status akun siswa');
             $table->timestamps();

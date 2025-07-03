@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\GenderEnum;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
@@ -24,6 +26,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'jenis_kelamin',
+        'alamat',
+        'telepon',
+        'email_verified_at'
+    ];
+
+    protected $casts = [
+        'jenis_kelamin' => GenderEnum::class,
     ];
 
     /**

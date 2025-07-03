@@ -3,16 +3,21 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\Master\StudentsService;
 use Illuminate\Http\Request;
 
 class StudentsController extends Controller
 {
+    public function __construct(protected StudentsService $studentsService){}
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $this->setRule('students.read');
+        // --
+        $students = $this->studentsService->getDataAllStudents();
+        return view('master.students.index', compact('students'));
     }
 
     /**
@@ -28,7 +33,21 @@ class StudentsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->setRule('students.create');
+        // Validate data
+        $dataValidated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|',
+            'nisn' => 'required|unique:student_accounts,nisn',
+            'kelas' => 'required|string|max:50',
+            'jenis_kelamin' => 'required|in:l,p',
+            'telepon' => 'nullable|digits_between:1,15',
+            'alamat' => 'nullable|string|max:255',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        return $this->studentsService->store($dataValidated);
     }
 
     /**
@@ -50,16 +69,33 @@ class StudentsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $studentId)
     {
-        //
+        $this->setRule('students.update');
+        $userId = $request->input('user_id');
+        // Validate data
+        $dataValidated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $userId,
+            'nisn' => 'required|unique:student_accounts,nisn,' . $studentId,
+            'kelas' => 'required|string|max:50',
+            'jenis_kelamin' => 'required|in:l,p',
+            'telepon' => 'nullable|digits_between:1,15',
+            'alamat' => 'nullable|string|max:255',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        // Process the update logic here, e.g., using a service class
+        return $this->studentsService->update($studentId, $dataValidated);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $studentId)
     {
-        //
+        $this->setRule('students.delete');
+        // Process the delete logic here, e.g., using a service class
+        return $this->studentsService->destroy($studentId);
     }
 }
