@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\ParentRelationshipEnum;
 
 class ParentStudent extends Model
 {
@@ -16,15 +17,19 @@ class ParentStudent extends Model
         'student_id',
     ];
 
+    protected $casts = [
+        'relationship' => ParentRelationshipEnum::class,
+    ];
+
     // Parent of the student
-    public function parent()
+    public function userData()
     {
         return $this->belongsTo(User::class, 'parent_id');
     }
 
-    // Student
-    public function student()
+    // Student of the parent
+    public function studentAccount()
     {
-        return $this->belongsTo(User::class, 'student_id');
+        return $this->belongsTo(StudentAccounts::class, 'student_id', 'student_id');
     }
 }

@@ -13,6 +13,7 @@ class StudentsService
     {
         return StudentAccounts::with(['userData'])
             ->orderBy('created_at', 'desc')
+            ->where('status', 'active')
             ->get();
     }
 
