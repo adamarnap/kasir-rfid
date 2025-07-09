@@ -2,16 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\TransactionsService;
 use Illuminate\Http\Request;
 
 class TransactionsController extends Controller
 {
+    public function __construct(protected TransactionsService $transactionsService)
+    {
+        
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($transactionId = null)
     {
-        //
+        $this->setRule('transactions.index');
+        // Get data
+        $products = $this->transactionsService->getDataAllProducts();
+        $chart = $this->transactionsService->getDataAllAddedProductToChart($transactionId);
+        // dd($chart);
+        return view('transactions.index', compact('products', 'chart', 'transactionId'));
     }
 
     /**
@@ -27,7 +38,14 @@ class TransactionsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->setRule('transactions.store');
+        // Validate request
+        $dataValidated = $request->validate([
+            'product_id' => 'required',
+        ]);
+        
+        // Process the transaction
+        return $this->transactionsService->storeNewTransaction($dataValidated);
     }
 
     /**

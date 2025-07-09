@@ -36,7 +36,11 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::redirect('/', '/dashboard');
 
     /* ---- Transaksi */
-    Route::resource('/transactions', TransactionsController::class)->names('transactions');
+    Route::get('transactions/{transactionId?}', [TransactionsController::class, 'index'])->name('transactions.index');
+    Route::post('transactions', [TransactionsController::class, 'store'])->name('transactions.store');
+    Route::put('transactions/{transactionId}', [TransactionsController::class, 'update'])->name('transactions.update');
+    Route::delete('transactions/{transactionId}', [TransactionsController::class, 'destroy'])->name('transactions.destroy');
+
 
     /* ---- Kartu RFID */
     Route::resource('/rfid', RfidController::class)->names('rfid');

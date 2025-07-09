@@ -36,7 +36,7 @@ Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
  */
 
 Breadcrumbs::for('transactions', function (BreadcrumbTrail $trail) {
-    $trail->push('Transaksi', route('transactions'));
+    $trail->push('Transaksi', route('transactions.index'));
 });
 
 /**
