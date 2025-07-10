@@ -18,7 +18,7 @@ class LocaleManager
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $lang = Session::get('locale', 'en');
+        $lang = Session::get('locale', 'id');
         Session::put('locale', $lang);
         App::setLocale($lang);
 

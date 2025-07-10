@@ -18,19 +18,17 @@ class TransactionsController extends Controller
     public function index($transactionId = null)
     {
         $this->setRule('transactions.index');
+
+        // Check available transaction by transaction id
+        $transaction = $this->transactionsService->checkTransactionIdAvailability($transactionId);
+        if (!$transaction && $transactionId) {
+            return redirect()->to('/transactions')->with('error', 'Transaction not found.');
+        }
+        
         // Get data
         $products = $this->transactionsService->getDataAllProducts();
         $chart = $this->transactionsService->getDataAllAddedProductToChart($transactionId);
-        // dd($chart);
         return view('transactions.index', compact('products', 'chart', 'transactionId'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -48,28 +46,45 @@ class TransactionsController extends Controller
         return $this->transactionsService->storeNewTransaction($dataValidated);
     }
 
-    /**
-     * Display the specified resource.
+    /** 
+     * Store a newly created item in the same transaction.
+     * This method is used to add a new item to an existing transaction.
      */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function storeNewItemInSameTransaction($transactionId)
     {
-        //
+        $this->setRule('transactions.create');
+        // Validate request
+        $dataValidated = request()->validate([
+            'product_id' => 'required',
+        ]);
+        
+        // Process the transaction
+        return $this->transactionsService->storeNewItemInSameTransaction($dataValidated, $transactionId);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateQuantity(Request $request, string $transactionItemId)
     {
-        //
+        $this->setRule('transactions.update');
+        // Validate request
+        $dataValidated = $request->validate([
+            'quantity' => 'required|numeric|min:1',
+        ]);
+        // Update process
+        return $this->transactionsService->updateTransactionItem($dataValidated, $transactionItemId);
+    }
+
+    /**
+     * Remove the specified item from the transaction.
+     */
+    public function itemDestroy(string $transactionItemId)
+    {
+        $this->setRule('transactions.delete');
+        // Delete the transaction item
+        return $this->transactionsService->deleteTransactionItem($transactionItemId);
     }
 
     /**
@@ -77,6 +92,26 @@ class TransactionsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $this->setRule('transactions.delete');
+        // Delete the transaction
+        return $this->transactionsService->deleteTransaction($id);
+    }
+
+    /**
+     * Pay for the transaction.
+     */
+    public function pay(Request $request, string $transactionId)
+    {
+        $this->setRule('transactions.update');
+        // Validate request
+        $dataValidated = $request->validate([
+            'payment_method' => 'required|in:cash,rfid',
+            // if payment method is rfid, then rfid_number and rfid_pin are required
+            'rfid_number' => 'required_if:payment_method,rfid|nullable|string|max:10',
+            'rfid_pin' => 'required_if:payment_method,rfid|nullable|string|max:6',
+        ]);
+        // dd($dataValidated);
+        // Process the payment
+        return $this->transactionsService->payTransaction($dataValidated, $transactionId);
     }
 }

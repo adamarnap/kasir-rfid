@@ -11,15 +11,26 @@ class RfidCards extends Model
 
     protected $fillable = [
         'student_id',
-        'rfid_code',
-        'is_active',
+        'card_number',
+        'card_pin',
+        'status',
+        'description',
+        'created_by',
     ];
 
-    /**
-     * Relationship with user
-     */
-    public function user()
+    /* Booted for created_by */
+    protected static function booted()
     {
-        return $this->belongsTo(User::class, 'student_id');
+        static::creating(function ($model) {
+            $model->created_by = auth()->id();
+        });
+    }
+
+    /**
+     * Relationship with studentAccounts
+     */
+    public function studentAccount()
+    {
+        return $this->belongsTo(StudentAccounts::class, 'student_id', 'student_id');
     }
 }

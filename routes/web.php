@@ -2,22 +2,23 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\RfidController;
+use App\Http\Controllers\TopupController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Master\CategoriesController;
+use App\Http\Controllers\TransactionsController;
+use App\Http\Controllers\Operator\HomeController;
+use App\Http\Controllers\Settings\RoleController;
+use App\Http\Controllers\Settings\UserController;
 use App\Http\Controllers\Master\ParentsController;
 use App\Http\Controllers\Master\ProductsController;
 use App\Http\Controllers\Master\StudentsController;
-use App\Http\Controllers\TransactionsController;
-use App\Http\Controllers\Operator\HomeController;
-use App\Http\Controllers\Report\TopupController as ReportTopupController;
-use App\Http\Controllers\Settings\RoleController;
-use App\Http\Controllers\Settings\UserController;
 use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\Master\CategoriesController;
 use App\Http\Controllers\Settings\NavigationController;
 use App\Http\Controllers\Settings\PreferenceController;
+use App\Http\Controllers\Report\TopupController as ReportTopupController;
 use App\Http\Controllers\Report\TransactionsController as ReportTransactionsController;
-use App\Http\Controllers\RfidController;
-use App\Http\Controllers\TopupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +39,10 @@ Route::middleware('auth', 'verified')->group(function () {
     /* ---- Transaksi */
     Route::get('transactions/{transactionId?}', [TransactionsController::class, 'index'])->name('transactions.index');
     Route::post('transactions', [TransactionsController::class, 'store'])->name('transactions.store');
-    Route::put('transactions/{transactionId}', [TransactionsController::class, 'update'])->name('transactions.update');
+    Route::put('transactions/{transactionId}/store-new-item-in-same-transaction', [TransactionsController::class, 'storeNewItemInSameTransaction'])->name('transactions.store-new-item-in-same-transaction');
+    Route::put('transactions/{transactionItemId}/update-quantity', [TransactionsController::class, 'updateQuantity'])->name('transactions.update-quantity');
+    Route::put('transactions/{transactionId}/pay', [TransactionsController::class, 'pay'])->name('transactions.pay');
+    Route::delete('transactions/{transactionItemId}/delete-item', [TransactionsController::class, 'itemDestroy'])->name('transactions.item-destroy');
     Route::delete('transactions/{transactionId}', [TransactionsController::class, 'destroy'])->name('transactions.destroy');
 
 

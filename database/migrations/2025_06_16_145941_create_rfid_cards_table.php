@@ -18,8 +18,11 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade')
                 ->comment('ID dari siswa yang memiliki kartu RFID');
-            $table->string('card_number', 50)->unique()->comment('Nomor unik dari kartu RFID');
+            $table->text('card_number')->comment('Nomor unik dari kartu RFID');
+            $table->text('card_pin')->comment('PIN unik dari kartu RFID');
             $table->enum('status', ['active', 'inactive'])->default('active')->comment('Status kartu RFID');
+            $table->integer('failed_attempts')->default(0)->comment('Jumlah percobaan gagal untuk memasukkan PIN');
+            $table->text('description')->nullable()->comment('Deskripsi atau catatan tambahan tentang kartu RFID');
             $table->foreignId('created_by')
                 ->constrained('users')
                 ->onDelete('cascade')
