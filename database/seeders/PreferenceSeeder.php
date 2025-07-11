@@ -18,13 +18,13 @@ class PreferenceSeeder extends Seeder
                 'group' => 'site',
                 'name' => 'app_name',
                 'is_asset' => false,
-                'value' => 'Adam Laravel',
+                'value' => 'Kasir RFID',
             ],
             [
                 'group' => 'site',
                 'name' => 'title',
                 'is_asset' => false,
-                'value' => 'Adam Laravel',
+                'value' => 'Kasir RFID',
             ],
             [
                 'group' => 'site',

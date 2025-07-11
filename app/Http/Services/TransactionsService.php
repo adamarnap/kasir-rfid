@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Storage;
 class TransactionsService
 {
 
+    // AES Encryption Trait
+    use \App\Traits\HasAesEncryption;
+
+
     /* Check if transaction ID is available */
     public function checkTransactionIdAvailability($transactionId = null)
     {
@@ -303,17 +307,24 @@ class TransactionsService
             if (strlen($rfidNumber) !== 10){
                 return redirect()->back()->with('error', 'Sorry, please rescan your RFID Card.');
             }
+
             // validate length of PIN
             if (strlen($rfidPin) !== 6){
                 return redirect()->back()->with('error', 'Sorry, please re-enter your PIN.');
             }
 
             // Check if the RFID card exists
-            $rfidCard = RfidCards::where('card_number', $rfidNumber)
-                ->first();
+            $existingCards = 0;
+            $rfidCards = RfidCards::where('status', 'active')->get();
+            foreach ($rfidCards as $card) {
+                if ($this->aesDecrypt($card->card_number) === $rfidNumber) {
+                    $rfidCard = $card;
+                    $existingCards++;
+                }
+            }
 
             // If RFID card does not exist
-            if (!$rfidCard) {
+            if ($existingCards == 0) {
                 return redirect()->back()->with('error', 'RFID card not found. Please check your card number.');
             }
 
@@ -322,7 +333,7 @@ class TransactionsService
                 return redirect()->back()->with('error', 'RFID card is inactive. Please contact support.');
             }
             // Check if the RFID PIN matches
-            if ($rfidCard->card_pin !== $rfidPin) {
+            if ($this->aesDecrypt($rfidCard->card_pin) !== $rfidPin) {
                 // Increment failed attempts
                 $rfidCard->failed_attempts += 1;
 
