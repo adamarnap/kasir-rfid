@@ -350,6 +350,11 @@ class TransactionsService
             }
             // Reset failed attempts if PIN is correct
             $rfidCard->failed_attempts = 0;
+
+            // Check RFID Card Owner (Student ID)
+            if (!$rfidCard->studentAccount) {
+                return redirect()->back()->with('error', 'RFID card does not belong to any student account.');
+            }
         }
 
         // Find the transaction
@@ -382,6 +387,8 @@ class TransactionsService
             }
 
             // Update the transaction status to paid
+            $transaction->payment_method = $paymentMethod;
+            $transaction->student_id = $rfidCard->student_id;
             $transaction->status = 'paid';
             $transaction->save();
 

@@ -32,7 +32,6 @@
     </style>
 @endpush
 <div class="mt-4">
-    <label class="form-label">Tekan Angka PIN</label>
     <div class="numeric-keypad">
         <div class="row g-2">
             <div class="col-4">
@@ -97,7 +96,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get the PIN input field
-            const pinInput = document.getElementById('rfid-pin-input');
+            const formInputAttachedKeypad = document.querySelector('.attach-keypad');
 
             // Get all number buttons
             const numberButtons = document.querySelectorAll('.pin-number');
@@ -109,46 +108,45 @@
                 button.addEventListener('click', function() {
                     const number = this.getAttribute('data-number');
 
-                    // Add number to input if current length is less than max length
-                    if (pinInput && pinInput.value.length < 6) { // Assuming max PIN length is 6
-                        pinInput.value += number;
+                    // Add number to input 
+                    
+                    formInputAttachedKeypad.value += number;
 
-                        // Add visual feedback
-                        this.classList.add('btn-primary');
-                        this.classList.remove('btn-outline-primary');
+                    // Add visual feedback
+                    this.classList.add('btn-primary');
+                    this.classList.remove('btn-outline-primary');
 
-                        setTimeout(() => {
-                            this.classList.remove('btn-primary');
-                            this.classList.add('btn-outline-primary');
-                        }, 150);
-                    }
+                    setTimeout(() => {
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-outline-primary');
+                    }, 150);
 
                     // Focus back to input
-                    pinInput.focus();
+                    formInputAttachedKeypad.focus();
                 });
             });
 
             // Clear last digit (backspace)
             clearButton.addEventListener('click', function() {
-                if (pinInput && pinInput.value.length > 0) {
-                    pinInput.value = pinInput.value.slice(0, -1);
+                if (formInputAttachedKeypad && formInputAttachedKeypad.value.length > 0) {
+                    formInputAttachedKeypad.value = formInputAttachedKeypad.value.slice(0, -1);
                 }
-                pinInput.focus();
+                formInputAttachedKeypad.focus();
             });
 
             // Clear all digits
             clearAllButton.addEventListener('click', function() {
-                if (pinInput) {
-                    pinInput.value = '';
+                if (formInputAttachedKeypad) {
+                    formInputAttachedKeypad.value = '';
                 }
-                pinInput.focus();
+                formInputAttachedKeypad.focus();
             });
 
             // Focus on PIN input when modal is opened
             const pinModal = document.getElementById('pinModal');
             pinModal.addEventListener('shown.bs.modal', function() {
-                if (pinInput) {
-                    pinInput.focus();
+                if (formInputAttachedKeypad) {
+                    formInputAttachedKeypad.focus();
                 }
             });
         });

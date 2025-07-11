@@ -28,5 +28,16 @@ class StudentAccounts extends Model
         return $this->belongsTo(User::class, 'student_id');
     }
 
+    /* Relationship with RfidCards */
+    public function rfidCards()
+    {
+        return $this->hasMany(RfidCards::class, 'student_id', 'student_id');
+    }
+
+    /* Relationship with Topups */
+    public function TopUpTransactions()
+    {
+        return $this->hasMany(TopUpTransactions::class, 'student_id', 'student_id');
+    }
 
 }

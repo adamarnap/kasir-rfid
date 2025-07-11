@@ -45,7 +45,7 @@ Breadcrumbs::for('transactions', function (BreadcrumbTrail $trail) {
  */
 
 Breadcrumbs::for('topup', function (BreadcrumbTrail $trail) {
-    $trail->push('Top Up', route('topup'));
+    $trail->push('Top Up', route('topup.index'));
 });
 
 /**

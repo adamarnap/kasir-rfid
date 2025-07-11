@@ -15,7 +15,7 @@
         </div>
         <div class="col-10">
             <label for="{{ $pinId }}" class="form-label">PIN Kartu RFID</label>
-            <input type="text" name="{{ $prefix }}_pin" id="{{ $pinId }}" class="form-control"
+            <input type="text" name="{{ $prefix }}_pin" id="{{ $pinId }}" class="form-control attach-keypad"
                 placeholder="Masukkan PIN Kartu RFID" autocomplete="new-password" maxlength="6" inputmode="numeric"
                 pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')"/>
             <div class="form-text text-danger">

@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\Report\TopupService;
 use Illuminate\Http\Request;
 
 class TopupController extends Controller
 {
+    public function __construct(protected TopupService $topupService)
+    {
+        // Initialize any required services or dependencies
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $this->setRule('topup.read');
+        // Get data
+        return view('topup.index');
     }
 
     /**
@@ -27,7 +34,15 @@ class TopupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->setRule('topup.create');
+        // Validate request
+        $request->validate([
+            'rfid_number' => 'required|numeric|digits:10',
+            'amount' => 'required|numeric|min:1000',
+        ]);
+
+        // Create Top Up
+        return $this->topupService->createTopup($request->all());
     }
 
     /**
