@@ -3,16 +3,25 @@
 namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\Report\TopupService;
 use Illuminate\Http\Request;
 
 class TopupController extends Controller
 {
+    public function __construct(protected TopupService $topupService)
+    {
+        // Constructor logic if needed
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $this->setRule('report-topup.read');
+        // Get data
+        $topups = $this->topupService->getAllTopups();
+        return view('report.topup.index', compact('topups'));
+
     }
 
     /**

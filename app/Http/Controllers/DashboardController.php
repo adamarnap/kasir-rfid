@@ -2,18 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\DashboardService;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+    public function __construct(protected DashboardService $dashboardService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $this->setRule('dashboard.read');
-        //
-        return view('dashboard.index');
+        $countAllTransactions = $this->dashboardService->getCountAllTransactions();
+        $countDraftTransactions = $this->dashboardService->getCountDraftTransactions();
+        $countPaidTransactions = $this->dashboardService->getCountPaidTransactions();
+        $countStudents = $this->dashboardService->getCountStudents();
+        $countParents = $this->dashboardService->getCountParents();
+        $countRfidCards = $this->dashboardService->getCountRfidCards();
+        return view('dashboard.index', compact(
+            'countAllTransactions',
+            'countDraftTransactions',
+            'countPaidTransactions',
+            'countStudents',
+            'countParents',
+            'countRfidCards'
+        ));
     }
 
     /**

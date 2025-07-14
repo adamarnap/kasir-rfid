@@ -379,6 +379,7 @@ class TransactionsService
 
                 // Check if the balance is sufficient
                 if ($rfidCard->studentAccount->balance < 0) {
+                    \DB::rollBack();
                     return redirect()->back()->with('error', 'Insufficient balance on RFID card.');
                 }
 

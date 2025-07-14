@@ -1,26 +1,43 @@
 @extends('layouts.custom-template.main')
 
-@section('title', '')
+@section('title', 'Laporan Topup')
 
-{{-- @section('breadcrumb')
-    {{ Breadcrumbs::render('users') }}
-@endsection --}}
+@section('breadcrumb')
+    {{ Breadcrumbs::render('report.topup') }}
+@endsection
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    @can('users.create')
-                        <a href="javascript:void(0);" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#addModal"><i class="bi bi-plus-circle-dotted me-2"></i> {{ __('app.add') }}</a>
-                    @endcan
-                </div>
                 <div class="card-body">
-                    <table id="myTable" class="table table-striped display  nowrap" style="width:100%">
+                    <table id="topupTable" class="table table-striped display  nowrap" style="width:100%">
                         <thead>
+                            <tr>
+                                <th class="text-center">No</th>
+                                <th>Nama Siswa <br> NISN</th>
+                                <th class="text-end">Jumlah Topup</th>
+                                <th class="text-center">Tgl. Topup</th>
+                            </tr>
                         </thead>
                         
                         <tbody>
+                            @forelse ($topups as $key => $topup)
+                                <tr>
+                                    <td class="text-center">{{ $key + 1 }}</td>
+                                    <td>
+                                        <strong>{{ $topup->studentAccount->userData->name ?? 'Topup Tanpa Siswa' }}</strong>
+                                        <br> 
+                                        {{ $topup->studentAccount->nisn ?? '' }}
+                                    </td>
+                                    <td class="text-end">Rp. {{ number_format($topup->amount, 0, ',', '.') }}</td>
+                                    <td class="text-center">{{ $topup->created_at->format('d-m-Y H:i') }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">Tidak ada data topup.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -32,7 +49,7 @@
 
 @push('scripts')
     <script>
-        $('#myTable').DataTable({
+        $('#topupTable').DataTable({
             responsive: true,
             "pageLength": 50
         });

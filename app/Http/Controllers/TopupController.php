@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\Report\TopupService;
+use App\Http\Services\TopupService;
 use Illuminate\Http\Request;
 
 class TopupController extends Controller

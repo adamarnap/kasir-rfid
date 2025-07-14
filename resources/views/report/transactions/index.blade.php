@@ -1,26 +1,67 @@
 @extends('layouts.custom-template.main')
 
-@section('title', '')
+@section('title', 'Laporan Transaksi')
 
-{{-- @section('breadcrumb')
-    {{ Breadcrumbs::render('users') }}
-@endsection --}}
+@section('breadcrumb')
+    {{ Breadcrumbs::render('report.transactions') }}
+@endsection
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    @can('users.create')
-                        <a href="javascript:void(0);" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#addModal"><i class="bi bi-plus-circle-dotted me-2"></i> {{ __('app.add') }}</a>
-                    @endcan
-                </div>
                 <div class="card-body">
                     <table id="myTable" class="table table-striped display  nowrap" style="width:100%">
                         <thead>
+                            <tr>
+                                <th class="text-center">No</th>
+                                <th>Nama Siswa <br> NISN</th>
+                                <th class="text-end">Total Tagihan</th>
+                                <th class="text-center">Metode Pembayaran</th>
+                                <th class="text-center">Tgl. Transaksi</th>
+                                <th class="text-center">Status Transaksi</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
                         </thead>
                         
                         <tbody>
+                            @forelse ($transactions as $key => $transaction)
+                                <tr>
+                                    <td class="text-center">{{ $key + 1 }}</td>
+                                    <td>
+                                        <strong>{{ $transaction->student->userData->name ?? 'Transaksi Draft' }}</strong>
+                                        <br> 
+                                        {{ $transaction->student->nisn ?? '' }}
+                                    </td>
+                                    <td class="text-end">{{ number_format($transaction->total_amount, 0, ',', '.') }}</td>
+                                    <td class="text-center">
+                                        @if ($transaction->payment_method == 'cash')
+                                            <span class="badge bg-success">Tunai</span>
+                                        @elseif ($transaction->payment_method == 'rfid')
+                                            <span class="badge bg-warning">RFID</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">{{ $transaction->created_at->format('d-m-Y H:i') }}</td>
+                                    <td class="text-center">
+                                        @if ($transaction->status == 'paid')
+                                            <span class="badge bg-success">Lunas</span>
+                                        @elseif ($transaction->status == 'draft')
+                                            <span class="badge bg-secondary">Draft</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        @can('report-transactions.read')
+                                            <a  class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#showModal_{{ $transaction->id }}">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        @endcan
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center">Tidak ada data transaksi.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -28,6 +69,8 @@
         </div>
     </div>
 
+    {{-- Include show modal --}}
+    @include('report.transactions.partials.modal-show')
 @endsection
 
 @push('scripts')
