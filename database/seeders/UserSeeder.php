@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 use App\Models\Navigation as ModelsNavigation;
+use App\Enums\RoleEnum;
 
 class UserSeeder extends Seeder
 {
@@ -32,6 +33,15 @@ class UserSeeder extends Seeder
         // create roles and assign existing permissions
         $developer = Role::create(['name' => 'developer']);
         $developer->syncPermissions($permissions);
+        
+        // Create Role Cashier
+        $cashier = Role::create(['name' => RoleEnum::CAHSIER->value]);
+        
+        // Create Role Student
+        $student = Role::create(['name' => RoleEnum::STUDENT->value]);
+        
+        // Create Role Parent
+        $parent = Role::create(['name' => RoleEnum::PARENT->value]);
 
         // create admin users
         $user = \App\Models\User::factory()->create([

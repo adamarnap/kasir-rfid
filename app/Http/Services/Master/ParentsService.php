@@ -3,6 +3,7 @@
 namespace App\Http\Services\Master;
 
 use App\Models\User;
+use App\Enums\RoleEnum;
 use App\Models\ParentStudent;
 use App\Models\StudentAccounts;
 use Illuminate\Support\Facades\Storage;
@@ -49,6 +50,9 @@ class ParentsService
                 'email_verified_at' => now(),
             ]);
 
+            // Asign Role
+            $user->assignRole(RoleEnum::PARENT->value);
+
             // Create parent-student relationship
             ParentStudent::create([
                 'parent_id' => $user->id,
@@ -58,7 +62,6 @@ class ParentsService
 
             // Commit transaction
             \DB::commit();
-
             return redirect()->route('master.parents.index')->with('success', 'Parent data stored successfully.');
         } catch (\Exception $e) {
             \DB::rollBack();
@@ -70,6 +73,8 @@ class ParentsService
     public function update($parentId, $dataValidated)
     {
         try {
+            // Start transaction
+            \DB::beginTransaction();
             // Find parent-student relationship
             $parentStudent = ParentStudent::findOrFail($parentId);
             // Update user data
@@ -86,9 +91,12 @@ class ParentsService
                 'relationship' => $dataValidated['relationship'],
                 'student_id' => $dataValidated['student_id'],
             ]);
+            // Commit transaction
+            \DB::commit();
             // Return success response  
             return redirect()->route('master.parents.index')->with('success', 'Parent data updated successfully.');
         } catch (\Exception $e) {
+            \DB::rollback();
             return back()->withErrors(['error' => 'Failed to update parent data: ' . $e->getMessage()]);
         }   
     }
@@ -97,6 +105,8 @@ class ParentsService
     public function destroy($parentId)
     {
         try {
+            // Start transaction
+            \DB::beginTransaction();
             // Find parent-student relationship
             $parentStudent = ParentStudent::findOrFail($parentId);
             // Delete parent-student relationship
@@ -104,9 +114,12 @@ class ParentsService
             // Delete user data
             $user = $parentStudent->userData;
             $user->delete();
+            // Commit transaction
+            \DB::commit();
             // Return success response
             return redirect()->route('master.parents.index')->with('success', 'Parent data deleted successfully.');
         } catch (\Exception $e) {
+            \DB::rollback();
             return back()->withErrors(['error' => 'Failed to delete parent data: ' . $e->getMessage()]);
         }  
     }

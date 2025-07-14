@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Master;
 
+use App\Enums\RoleEnum;
 use App\Models\StudentAccounts;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +34,9 @@ class StudentsService
                 'alamat' => $dataValidated['alamat'] ?? null,
                 'email_verified_at' => now(),
             ]);
+
+            // Asign Role
+            $user->assignRole(RoleEnum::STUDENT->value);
             
             // Create student account
             $studentAccount = StudentAccounts::create([
@@ -47,6 +51,7 @@ class StudentsService
             // Return success response
             return redirect()->route('master.students.index')->with('success', 'Student data stored successfully.');
         }catch(\Exception $e){
+            \DB::rollback();
             // Handle exception, log error, etc.
             return back()->withErrors(['error' => 'Failed to store student data: ' . $e->getMessage()]);
         }
@@ -56,6 +61,8 @@ class StudentsService
     public function update($studentsId, $dataValidated)
     {
         try {
+            // Start transaction
+            \DB::beginTransaction();
             // Find student account
             $studentAccount = StudentAccounts::findOrFail($studentsId);
             // Update user data
@@ -73,8 +80,11 @@ class StudentsService
                 'kelas' => $dataValidated['kelas'],
                 'status' => $dataValidated['status'],
             ]);
+            // Commit transaction
+            \DB::commit();
             return redirect()->route('master.students.index')->with('success', 'Student data updated successfully.');
         } catch (\Exception $e) {
+            \DB::rollback();
             return back()->withErrors(['error' => 'Failed to update student data: ' . $e->getMessage()]);
         }
     }
@@ -83,6 +93,8 @@ class StudentsService
     public function destroy($studentsId)
     {
         try {
+            // Start transaction
+            \DB::beginTransaction();
             // Find student account
             $studentAccount = StudentAccounts::findOrFail($studentsId);
             // Delete user data
@@ -90,8 +102,11 @@ class StudentsService
             $user->delete();
             // Delete student account
             $studentAccount->delete();
+            // Commit transaction
+            \DB::commit();
             return redirect()->route('master.students.index')->with('success', 'Student data deleted successfully.');
         } catch (\Exception $e) {
+            \DB::rollback();
             return back()->withErrors(['error' => 'Failed to delete student data: ' . $e->getMessage()]);
         }   
     }
