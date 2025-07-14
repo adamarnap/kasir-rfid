@@ -8,6 +8,7 @@ use App\View\Composers\NavigationComposer;
 use App\View\Composers\PreferenceComposer;
 use App\View\Composers\FormComposer;
 use App\View\Composers\ThemeModeComposer;
+use App\View\Composers\CounterActiveTransactions;
 
 class ViewComposerServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,7 @@ class ViewComposerServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        View::composer(['layouts.custom-template.sidebar.sidebar'], CounterActiveTransactions::class);
         View::composer(['layouts.custom-template.sidebar.sidebar'], NavigationComposer::class);
         View::composer(['layouts.custom-template.topbar.topbar'], NavigationComposer::class);
         View::composer(['layouts.custom-template.main'], PreferenceComposer::class);

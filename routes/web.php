@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActiveTransactionsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\RfidController;
@@ -44,6 +45,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::put('transactions/{transactionId}/pay', [TransactionsController::class, 'pay'])->name('transactions.pay');
     Route::delete('transactions/{transactionItemId}/delete-item', [TransactionsController::class, 'itemDestroy'])->name('transactions.item-destroy');
     Route::delete('transactions/{transactionId}', [TransactionsController::class, 'destroy'])->name('transactions.destroy');
+    Route::get('active-transactions', [ActiveTransactionsController::class, 'index'])->name('active-transactions.index');
 
 
     /* ---- Kartu RFID */

@@ -39,6 +39,11 @@ Breadcrumbs::for('transactions', function (BreadcrumbTrail $trail) {
     $trail->push('Transaksi', route('transactions.index'));
 });
 
+Breadcrumbs::for('active-transactions', function (BreadcrumbTrail $trail) {
+    $trail->parent('transactions');
+    $trail->push('Transaksi Aktif', route('active-transactions.index'));
+});
+
 /**
  * ------------------------------------------------------------------------------------------------------------------------
  * Topup

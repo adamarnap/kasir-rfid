@@ -110,8 +110,21 @@ class TransactionsController extends Controller
             'rfid_number' => 'required_if:payment_method,rfid|nullable|string|max:10',
             'rfid_pin' => 'required_if:payment_method,rfid|nullable|string|max:6',
         ]);
-        // dd($dataValidated);
+
         // Process the payment
         return $this->transactionsService->payTransaction($dataValidated, $transactionId);
+    }
+
+    /** 
+     * Get active transactions.
+     * This method retrieves all active transactions.
+     * transactions status = 'draft'
+     */
+    public function active()
+    {
+        $this->setRule('transactions.read');
+        // Get active transactions
+        $activeTransactions = $this->transactionsService->getActiveTransactions();
+        return view('transactions.active', compact('activeTransactions'));
     }
 }

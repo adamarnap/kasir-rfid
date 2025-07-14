@@ -43,6 +43,18 @@ class TransactionsService
         return $chart;
     }
 
+    /** 
+     * Get active transaction
+     * Status = 'draft'
+     */
+    public function getActiveTransactions()
+    {
+        return Transactions::with('cashier', 'student', 'items.product')
+            ->where('status', 'draft')
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
     /* Store New Transaction */
     public function storeNewTransaction(array $dataValidated)
     {

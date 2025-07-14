@@ -44,6 +44,14 @@
                             class="nav-link {{ $routePrefix == $navUrl ? 'active' : '' }}">
                             <i class="{{ $nav['icon'] }}"></i>
                             <p>{{ $nav['name'] }}</p>
+                            @if ($nav['slug'] == 'active-transactions')
+                                <span class="nav-badge badge text-bg-danger me-3 fs-bold">
+                                    {{-- Display the count of active transactions --}}
+                                    <strong>
+                                        {{ $activeTransactionsCount ?? 0 }}
+                                    </strong>
+                                </span>
+                            @endif
                         </a>
                     </li>
                 @else

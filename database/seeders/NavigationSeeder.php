@@ -50,6 +50,18 @@ class NavigationSeeder extends Seeder
                 'active' => true,
                 'display' => true,
             ],
+            /* Transaksi Aktif */
+            [
+                'id' => 13,
+                'name' => 'Transaksi Aktif',
+                'url' => 'active-transactions.index',
+                'slug' => 'active-transactions',
+                'icon' => 'bi bi-cart4',
+                'order' => 3,
+                'parent_id' => null,
+                'active' => true,
+                'display' => true,
+            ],
             /* Kartu RFID */
             [
                 'id' => 3,
@@ -57,7 +69,7 @@ class NavigationSeeder extends Seeder
                 'url' => 'rfid.index',
                 'slug' => 'rfid',
                 'icon' => 'bi bi-credit-card',
-                'order' => 3,
+                'order' => 4,
                 'parent_id' => null,
                 'active' => true,
                 'display' => true,
@@ -69,7 +81,7 @@ class NavigationSeeder extends Seeder
                 'url' => 'topup.index',
                 'slug' => 'topup',
                 'icon' => 'bi bi-wallet2',
-                'order' => 4,
+                'order' => 5,
                 'parent_id' => null,
                 'active' => true,
                 'display' => true,
@@ -81,7 +93,7 @@ class NavigationSeeder extends Seeder
                 'url' => '#',
                 'slug' => 'master',
                 'icon' => 'bi bi-database',
-                'order' => 5,
+                'order' => 6,
                 'parent_id' => null,
                 'active' => true,
                 'display' => true,
@@ -130,6 +142,7 @@ class NavigationSeeder extends Seeder
                 'active' => true,
                 'display' => true,
             ],
+            
             /* Laporan */
             [
                 'id' => 10,
@@ -137,7 +150,7 @@ class NavigationSeeder extends Seeder
                 'url' => '#',
                 'slug' => 'report',
                 'icon' => 'bi bi-file-earmark-text',
-                'order' =>  6,
+                'order' =>  7,
                 'parent_id' => null,
                 'active' => true,
                 'display' => true,
@@ -164,6 +177,8 @@ class NavigationSeeder extends Seeder
                 'active' => true,
                 'display' => true,
             ],
+
+            /* Settings */
             [
                 'id' => 100,
                 'name' => 'Profil Saya',
