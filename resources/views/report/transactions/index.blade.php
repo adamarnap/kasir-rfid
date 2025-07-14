@@ -15,24 +15,29 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                <th>Nama Siswa <br> NISN</th>
+                                @if (!$isStudentOrParent)
+                                    <th>Nama Siswa <br> NISN</th>
+                                @endif
                                 <th class="text-end">Total Tagihan</th>
                                 <th class="text-center">Metode Pembayaran</th>
                                 <th class="text-center">Tgl. Transaksi</th>
                                 <th class="text-center">Status Transaksi</th>
+                                <th class="text-center">Petugas Kasir</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         
                         <tbody>
-                            @forelse ($transactions as $key => $transaction)
+                            @foreach ($transactions as $key => $transaction)
                                 <tr>
                                     <td class="text-center">{{ $key + 1 }}</td>
-                                    <td>
-                                        <strong>{{ $transaction->student->userData->name ?? 'Transaksi Draft' }}</strong>
-                                        <br> 
-                                        {{ $transaction->student->nisn ?? '' }}
-                                    </td>
+                                    @if (!$isStudentOrParent)
+                                        <td>
+                                            <strong>{{ $transaction->student->userData->name ?? 'Transaksi Draft' }}</strong>
+                                            <br> 
+                                            {{ $transaction->student->nisn ?? '' }}
+                                        </td>
+                                    @endif
                                     <td class="text-end">{{ number_format($transaction->total_amount, 0, ',', '.') }}</td>
                                     <td class="text-center">
                                         @if ($transaction->payment_method == 'cash')
@@ -41,13 +46,16 @@
                                             <span class="badge bg-warning">RFID</span>
                                         @endif
                                     </td>
-                                    <td class="text-center">{{ $transaction->created_at->format('d-m-Y H:i') }}</td>
+                                    <td class="text-center">{{ $transaction->created_at->format('d M Y, H:i') }}</td>
                                     <td class="text-center">
                                         @if ($transaction->status == 'paid')
                                             <span class="badge bg-success">Lunas</span>
                                         @elseif ($transaction->status == 'draft')
                                             <span class="badge bg-secondary">Draft</span>
                                         @endif
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $transaction->cashier->name ?? '-' }}
                                     </td>
                                     <td class="text-center">
                                         @can('report-transactions.read')
@@ -57,12 +65,9 @@
                                         @endcan
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center">Tidak ada data transaksi.</td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
+
                     </table>
                 </div>
             </div>

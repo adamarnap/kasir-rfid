@@ -64,6 +64,7 @@ Route::middleware('auth', 'verified')->group(function () {
 
     /* ---- Laporan */
     Route::prefix('report')->name('report.')->group(function () {
+        // Route::get('/transactions/{studentId?}', [ReportTransactionsController::class, 'index'])->name('transactions.index');
         Route::resource('/transactions', ReportTransactionsController::class)->names('transactions');
         Route::resource('/topup', ReportTopupController::class)->names('topup');
     });

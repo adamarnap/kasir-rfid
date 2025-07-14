@@ -19,8 +19,10 @@ class TopupController extends Controller
     {
         $this->setRule('report-topup.read');
         // Get data
-        $topups = $this->topupService->getAllTopups();
-        return view('report.topup.index', compact('topups'));
+        $datas = $this->topupService->getAllTopups();
+        $topups = $datas['topups'];
+        $isStudentOrParent = $datas['isStudentOrParent'];
+        return view('report.topup.index', compact('topups', 'isStudentOrParent'));
 
     }
 

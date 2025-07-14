@@ -89,4 +89,9 @@ class User extends Authenticatable implements MustVerifyEmail
             ]);
         }
     }
+
+    /* Student Parent Relationship */
+    public function parent(){
+        return $this->hasOne(ParentStudent::class, 'parent_id', 'id');
+    }
 }
