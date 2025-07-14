@@ -2,10 +2,11 @@
 
 namespace App\Http\Services;
 
-use App\Models\ParentStudent;
+use App\Enums\RoleEnum;
 use App\Models\RfidCards;
-use App\Models\StudentAccounts;
 use App\Models\Transactions;
+use App\Models\ParentStudent;
+use App\Models\StudentAccounts;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -67,4 +68,68 @@ class DashboardService
         return RfidCards::count();
     }
 
+    /* Get User has Logged is Student or Parent */
+    public function checkIsStudentOrParent(): bool
+    {
+        // Assuming you have a way to check if the user is a student or parent
+        return auth()->user()->hasRole([RoleEnum::STUDENT->value, RoleEnum::PARENT->value]);
+    }
+
+    /**
+     * Get summary transactions by student ID.
+     *
+     * @return array
+     */
+    public function getSummaryTransactionsByStudentId(): array
+    {
+        $isStudentOrParent = $this->checkIsStudentOrParent();
+
+        if ($isStudentOrParent) {
+            // If user logged in as Student then get Student ID from User ID, because User ID is the same as Student ID
+            if (auth()->user()->hasRole(RoleEnum::STUDENT->value)) {
+                $studentId = auth()->user()->id;
+            }
+            // If user logged in as Parent then get Student ID from Parent relationship
+            else if (auth()->user()->hasRole(RoleEnum::PARENT->value)) {
+                $studentId = auth()->user()->parent->student_id ?? null;
+            }
+
+            // Fetch the summary transactions for the student
+            return Transactions::where('student_id', $studentId)
+                ->selectRaw('SUM(total_amount) as total_amount, COUNT(*) as total_transactions')
+                ->groupBy('student_id')
+                ->first()
+                ->toArray();
+        }
+
+        return [];
+    }
+
+    /**
+     * Get student balance by student ID.
+     *
+     * @return array
+     */
+    public function getStudentBalanceByStudentId(): array
+    {
+        $isStudentOrParent = $this->checkIsStudentOrParent();
+
+        if ($isStudentOrParent) {
+            // If user logged in as Student then get Student ID from User ID, because User ID is the same as Student ID
+            if (auth()->user()->hasRole(RoleEnum::STUDENT->value)) {
+                $studentId = auth()->user()->id;
+            }
+            // If user logged in as Parent then get Student ID from Parent relationship
+            else if (auth()->user()->hasRole(RoleEnum::PARENT->value)) {
+                $studentId = auth()->user()->parent->student_id ?? null;
+            }
+
+            // Fetch the student balance for the student
+            return StudentAccounts::where('student_id', $studentId)
+                ->select('balance')
+                ->first()
+                ->toArray();
+        }
+        return [];
+    }
 }

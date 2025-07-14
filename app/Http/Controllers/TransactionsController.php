@@ -17,7 +17,7 @@ class TransactionsController extends Controller
      */
     public function index($transactionId = null)
     {
-        $this->setRule('transactions.index');
+        $this->setRule('transactions.read');
 
         // Check available transaction by transaction id
         $transaction = $this->transactionsService->checkTransactionIdAvailability($transactionId);

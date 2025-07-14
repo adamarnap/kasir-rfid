@@ -14,7 +14,7 @@ class ActiveTransactionsController extends Controller
     /* Get data Active Transactions */
     public function index()
     {
-        $this->setRule('active-transactions.index');
+        $this->setRule('active-transactions.read');
 
         // Get all active transactions
         $activeTransactions = $this->transactionsService->getActiveTransactions();
