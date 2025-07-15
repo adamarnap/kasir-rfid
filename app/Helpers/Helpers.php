@@ -217,3 +217,15 @@ if (!function_exists('getDefaultTheme')) {
         return env('DEFAULT_THEME', 'light'); // 'light' adalah default jika tidak ada di .env
     }
 }
+
+use App\Traits\HasRSAEncryption;
+
+if (!function_exists('rsa_decrypt')) {
+    function rsa_decrypt($value)
+    {
+        $trait = new class {
+            use HasRSAEncryption;
+        };
+        return $trait->rsaDecrypt($value);
+    }
+}

@@ -11,8 +11,11 @@ use Illuminate\Support\Facades\Storage;
 class TransactionsService
 {
 
+    
     // AES Encryption Trait
     use \App\Traits\HasAesEncryption;
+    // RSA Encryption Trait
+    use \App\Traits\HasRSAEncryption;
 
 
     /* Check if transaction ID is available */
@@ -75,7 +78,7 @@ class TransactionsService
             // Create a new transaction
             $transaction = Transactions::create([
                 'cashier_id' => auth()->id(),
-                'total_amount' => $product->price,
+                'total_amount' => $this->rsaEncrypt($product->price),
                 'payment_method' => 'rfid', // Default payment method
                 'status' => 'draft', // Default status
             ]);
@@ -84,7 +87,7 @@ class TransactionsService
             $transaction->items()->create([
                 'product_id' => $product->id,
                 'quantity' => 1, // Default quantity
-                'product_price' => $product->price,
+                'product_price' => $this->rsaEncrypt($product->price),
             ]);
 
             // Update product stock
@@ -135,7 +138,7 @@ class TransactionsService
             $transaction->items()->create([
                 'product_id' => $product->id,
                 'quantity' => 1, // Default quantity
-                'product_price' => $product->price,
+                'product_price' => $this->rsaEncrypt($product->price),
             ]);
 
             // Update product stock
@@ -143,7 +146,12 @@ class TransactionsService
             $product->save();
 
             // Update the transaction total amount
-            $transaction->total_amount += $product->price;
+            $decrypted = (float) $this->rsaDecrypt($transaction->total_amount);
+            $productPrice = (float) $product->price;
+
+            $total = $decrypted + $productPrice;
+
+            $transaction->total_amount = $this->rsaEncrypt($total);
             $transaction->save();
 
             // Commit the transaction
@@ -185,14 +193,14 @@ class TransactionsService
             // Update the transaction item
             $transactionItem->update([
                 'quantity' => $dataValidated['quantity'],
-                'product_price' => $product->price, // Update price if needed
+                'product_price' => $this->rsaEncrypt($product->price), // Update price if needed
             ]);
 
             // Update the transaction total amount
             $transaction = $transactionItem->transaction;
-            $transaction->total_amount = $transaction->items->sum(function ($item) {
-                return $item->quantity * $item->product_price;
-            });
+            $transaction->total_amount = $this->rsaEncrypt($transaction->items->sum(function ($item) {
+                return $item->quantity * (float) $this->rsaDecrypt($item->product_price);
+            }));
             $transaction->save();
             
             // Update product stock
@@ -201,7 +209,6 @@ class TransactionsService
 
             // Commit the transaction
             \DB::commit();
-
 
             return redirect()->route('transactions.index', $transactionItem->transaction_id)->with('success', 'Transaction updated successfully.');
         } catch (\Exception $e) {
@@ -248,9 +255,9 @@ class TransactionsService
             }
 
             // Update the transaction total amount
-            $transaction->total_amount = $transaction->items->sum(function ($item) {
-                return $item->quantity * $item->product_price;
-            });
+            $transaction->total_amount = $this->rsaEncrypt( $transaction->items->sum(function ($item) {
+                return $item->quantity * (float) $this->rsaDecrypt($item->product_price);
+            }));
             $transaction->save();
 
             // Commit the transaction
@@ -387,7 +394,7 @@ class TransactionsService
             // If payment method is RFID, update the RFID card status
             if ($paymentMethod === 'rfid') {
                 // Deduct the transaction amount from the RFID card balance
-                $rfidCard->studentAccount->balance -= $transaction->total_amount;
+                $rfidCard->studentAccount->balance -= (float) $this->rsaDecrypt($transaction->total_amount);
 
                 // Check if the balance is sufficient
                 if ($rfidCard->studentAccount->balance < 0) {

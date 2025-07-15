@@ -23,14 +23,14 @@
                                 <tr>
                                     <td class="text-center">{{ $key + 1 }}</td>
                                     <td>{{ $item->product->name }}</td>
-                                    <td class="text-end">Rp. {{ number_format($item->product_price, 0, ',', '.') }}</td>
+                                    <td class="text-end">Rp. {{ number_format((float) rsa_decrypt($item->product_price), 0, ',', '.') }}</td>
                                     <td class="text-end">{{ $item->quantity }}</td>
-                                    <td class="text-end">Rp. {{ number_format(($item->product_price * $item->quantity), 0, ',', '.') }}</td>
+                                    <td class="text-end">Rp. {{ number_format(((float) rsa_decrypt($item->product_price) * $item->quantity), 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach
                             <tr>
                                 <td colspan="4" class="text-end"><strong>Total:</strong></td>
-                                <td class="text-end"><strong>Rp. {{ number_format($transaction->total_amount, 0, ',', '.') }}</strong></td>
+                                <td class="text-end"><strong>Rp. {{ number_format((float) rsa_decrypt($transaction->total_amount), 0, ',', '.') }}</strong></td>
                             </tr>
                         </tbody>
                     </table>

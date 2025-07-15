@@ -33,7 +33,7 @@
                 <!--begin::Small Box Widget 1-->
                 <div class="small-box text-bg-warning">
                     <div class="inner">
-                        <h3>{{ $summaryTransactionsByStudentId['total_transactions'] ?? 0 }} Transaksi</h3>
+                        <h3>{{ $summaryTransactionsByStudentId['count_transactions'] ?? 0 }} Transaksi</h3>
                         <p>Jumlah Transaksi</p>
                     </div>
                     <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"

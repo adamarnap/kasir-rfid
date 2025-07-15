@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Storage;
 class DashboardService
 {
 
+    // AES Encryption Trait
+    use \App\Traits\HasAesEncryption;
+    // RSA Encryption Trait
+    use \App\Traits\HasRSAEncryption;
+
     /**
      * Get the count of all transactions.
      *
@@ -95,11 +100,20 @@ class DashboardService
             }
 
             // Fetch the summary transactions for the student
-            return Transactions::where('student_id', $studentId)
-                ->selectRaw('SUM(total_amount) as total_amount, COUNT(*) as total_transactions')
-                ->groupBy('student_id')
-                ->first()
-                ->toArray();
+            $summaryTransactionsByStudentId = Transactions::where('student_id', $studentId)->get();
+            
+            // Decrypt the total amount for each transaction
+            $totalAmountTransactions = 0;
+            $countTransactions = $summaryTransactionsByStudentId->count();
+            foreach($summaryTransactionsByStudentId as $transaction) {
+                // Decrypt the total amount for each transaction
+                $totalAmountTransactions += (float) $this->rsaDecrypt($transaction->total_amount);
+            }
+
+            return [
+                'total_amount' => $totalAmountTransactions,
+                'count_transactions' => $countTransactions,
+            ];
         }
 
         return [];

@@ -25,7 +25,6 @@ class TransactionsController extends Controller
 
         $transactions = $datas['transactions'];
         $isStudentOrParent = $datas['isStudentOrParent'];
-        // dd($transactions, $isStudentOrParent);
 
         return view('report.transactions.index', compact('transactions', 'isStudentOrParent'));
     }

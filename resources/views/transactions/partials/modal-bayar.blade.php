@@ -16,7 +16,7 @@
                                 <div class="mb-2 text-center">
                                     <div class="bg- text-success py-4 px-3 mb-4 rounded" style="border: 2px solid #28a745;">
                                         <h1 class="display-3 font-weight-bold m-0">
-                                            Rp {{ number_format($chart->total_amount ?? 0, 0, '.', ',') }}
+                                            Rp {{ number_format((float) rsa_decrypt($chart->total_amount) ?? 0, 0, '.', ',') }}
                                         </h1>
                                     </div>
                                 </div>
