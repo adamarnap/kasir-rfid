@@ -21,10 +21,8 @@
                             <tr>
                                 <th>Nama</th>
                                 <th>Email</th>
-                                <th>NISN</th>
                                 <th>Kelas</th>
                                 <th>Jenis Kelamin</th>
-                                <th>Telepon</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -35,10 +33,8 @@
                                 <tr>
                                     <td>{{ $student->userData->name }}</td>
                                     <td>{{ $student->userData->email }}</td>
-                                    <td>{{ $student->nisn ?? '-' }}</td>
                                     <td>{{ $student->kelas ?? '-' }}</td>
                                     <td>{{ $student->userData->jenis_kelamin->label() }}</td>
-                                    <td>{{ $student->userData->telepon ?? '-' }}</td>
                                     <td>
                                         @if ($student->status == 'active')
                                             <span class="badge bg-success">Aktif</span>

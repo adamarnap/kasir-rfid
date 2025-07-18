@@ -92,7 +92,7 @@
                                     <select name="student_id" class="select2 form-select" required>
                                         <option value="">Pilih Siswa</option>
                                         @foreach ($students as $student)
-                                            <option value="{{ $student->userData->id }}">{{ $student->userData->name }} - ({{ $student->nisn }})</option>
+                                            <option value="{{ $student->userData->id }}">{{ $student->userData->name }}</option>
                                         @endforeach
                                     </select>
                                     <div id="" class="form-text text-danger">

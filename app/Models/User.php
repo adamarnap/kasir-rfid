@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\GenderEnum;
+use App\Models\StudentAccounts;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
@@ -93,5 +94,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /* Student Parent Relationship */
     public function parent(){
         return $this->hasOne(ParentStudent::class, 'parent_id', 'id');
+    }
+
+    public function studentAccount(){
+        return $this->hasOne(StudentAccounts::class, 'student_id', 'id');
     }
 }

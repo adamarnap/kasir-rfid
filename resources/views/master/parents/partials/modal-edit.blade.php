@@ -98,7 +98,7 @@
                                         <option value="">Pilih Siswa</option>
                                         @foreach ($students as $student)
                                             <option value="{{ $student->student_id }}" {{ $parent->studentAccount->student_id == $student->student_id ? 'selected' : '' }}>
-                                                {{ $student->userData->name }} - ({{ $student->nisn ?? '-' }})
+                                                {{ $student->userData->name }}
                                             </option>
                                         @endforeach
                                     </select>

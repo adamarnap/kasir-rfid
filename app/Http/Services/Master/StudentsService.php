@@ -30,7 +30,6 @@ class StudentsService
                 'email' => $dataValidated['email'],
                 'password' => bcrypt($dataValidated['password']),
                 'jenis_kelamin' => $dataValidated['jenis_kelamin'],
-                'telepon' => $dataValidated['telepon'] ?? null,
                 'alamat' => $dataValidated['alamat'] ?? null,
                 'email_verified_at' => now(),
             ]);
@@ -41,7 +40,6 @@ class StudentsService
             // Create student account
             $studentAccount = StudentAccounts::create([
                 'student_id' => $user->id,
-                'nisn' => $dataValidated['nisn'],
                 'kelas' => $dataValidated['kelas'],
                 'status' => $dataValidated['status'],
                 'balance' => 0, // Default balance
@@ -71,12 +69,10 @@ class StudentsService
                 'name' => $dataValidated['name'],
                 'email' => $dataValidated['email'],
                 'jenis_kelamin' => $dataValidated['jenis_kelamin'],
-                'telepon' => $dataValidated['telepon'] ?? null,
                 'alamat' => $dataValidated['alamat'] ?? null,
             ]);
             // Update student account data
             $studentAccount->update([
-                'nisn' => $dataValidated['nisn'],
                 'kelas' => $dataValidated['kelas'],
                 'status' => $dataValidated['status'],
             ]);

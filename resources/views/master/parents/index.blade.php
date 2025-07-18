@@ -22,7 +22,7 @@
                                 <th>No</th>
                                 <th>Nama</th>
                                 <th>Email</th>
-                                <th>Nama Siswa<br>NISN</th>
+                                <th>Nama Siswa</th>
                                 <th>Hubungan</th>
                                 <th>Telepon</th>
                                 <th>Aksi</th>
@@ -40,8 +40,6 @@
                                             <strong>
                                                 {{ $parent->studentAccount->userData->name }}
                                             </strong>
-                                            <br>
-                                            {{ $parent->studentAccount->nisn ?? '-' }}
                                         @else
                                             -
                                         @endif

@@ -21,7 +21,7 @@
                                         <option value="">Pilih Siswa</option>
                                         @foreach ($students as $student)
                                             <option value="{{ $student->student_id }}" {{ $card->student_id == $student->student_id ? 'selected' : '' }}>
-                                                [{{ $student->nisn ?? '-' }}] - {{ $student->userData->name ?? '-' }}
+                                                {{ $student->userData->name ?? '-' }}
                                             </option>
                                         @endforeach
                                     </select>

@@ -39,10 +39,8 @@ class StudentsController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|',
-            'nisn' => 'required|unique:student_accounts,nisn',
             'kelas' => 'required|string|max:50',
             'jenis_kelamin' => 'required|in:l,p',
-            'telepon' => 'nullable|digits_between:1,15',
             'alamat' => 'nullable|string|max:255',
             'status' => 'required|in:active,inactive',
         ]);
@@ -77,10 +75,8 @@ class StudentsController extends Controller
         $dataValidated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $userId,
-            'nisn' => 'required|unique:student_accounts,nisn,' . $studentId,
             'kelas' => 'required|string|max:50',
             'jenis_kelamin' => 'required|in:l,p',
-            'telepon' => 'nullable|digits_between:1,15',
             'alamat' => 'nullable|string|max:255',
             'status' => 'required|in:active,inactive',
         ]);

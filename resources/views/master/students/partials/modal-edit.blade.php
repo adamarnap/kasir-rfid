@@ -45,16 +45,6 @@
                             </div>
                             <div class="col-6">
                                 <div class="mb-2">
-                                    <label for="" class="form-label">NISN</label>
-                                    <input type="number" name="nisn" class="form-control" id="nisn" value="{{ $student->nisn }}"
-                                        placeholder="Silahkan masukkan NISN" required autocomplete="off"/>
-                                    <div id="" class="form-text text-danger">
-                                        *Wajib diisi.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="mb-2">
                                     <label for="" class="form-label">Kelas</label>
                                     <input type="text" name="kelas" class="form-control" id="kelas" value="{{ $student->kelas }}"
                                         placeholder="Silahkan masukkan kelas" required autocomplete="off"/>
@@ -71,16 +61,6 @@
                                         <option value="l" {{ $student->userData->jenis_kelamin->value == 'l' ? 'selected' : '' }}>Laki - Laki</option>
                                         <option value="p" {{ $student->userData->jenis_kelamin->value == 'p' ? 'selected' : '' }}>Perempuan</option>
                                     </select>
-                                    <div id="" class="form-text text-danger">
-                                        *Wajib diisi.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="mb-2">
-                                    <label for="" class="form-label">Telepon</label>
-                                    <input type="number" name="telepon" class="form-control" id="telepon" value="{{ $student->userData->telepon }}"
-                                        placeholder="Silahkan masukkan nomor telepon" required autocomplete="off"/>
                                     <div id="" class="form-text text-danger">
                                         *Wajib diisi.
                                     </div>
