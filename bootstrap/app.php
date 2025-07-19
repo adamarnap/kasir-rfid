@@ -13,7 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // Web middleware
         $middleware->web(append:[
-            \App\Http\Middleware\LocaleManager::class
+            \App\Http\Middleware\LocaleManager::class,
+            \App\Http\Middleware\CheckLicense::class
         ]);
         // Alias middleware | can use for route or group
         $middleware->alias([

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ActiveTransactionsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\RfidController;
@@ -14,8 +13,10 @@ use App\Http\Controllers\Settings\UserController;
 use App\Http\Controllers\Master\ParentsController;
 use App\Http\Controllers\Master\ProductsController;
 use App\Http\Controllers\Master\StudentsController;
+use App\Http\Controllers\Settings\LicenseController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Master\CategoriesController;
+use App\Http\Controllers\ActiveTransactionsController;
 use App\Http\Controllers\Settings\NavigationController;
 use App\Http\Controllers\Settings\PreferenceController;
 use App\Http\Controllers\Report\TopupController as ReportTopupController;
@@ -86,6 +87,13 @@ require __DIR__ . '/auth.php';
 
 // Change Locale Language
 Route::get('change-locale/{lang}', [LocaleController::class, 'changeLocale'])->name('change-locale');
+Route::get('/activate', [LicenseController::class, 'showActivateForm'])->name('license.activate.form');
+Route::post('/activate', [LicenseController::class, 'activate'])->name('license.activate.submit');
+Route::post('/deactivate-license', [LicenseController::class, 'deactivate'])->name('license.deactivate'); // opsional
+
+// Jika ingin route untuk cek status (misal debugging):
+Route::get('/license-status', [LicenseController::class, 'status'])->name('license.status');
+
 
 
 // Route::middleware('auth')->group(function () {
