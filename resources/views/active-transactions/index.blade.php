@@ -37,7 +37,9 @@
                                         <strong>{{ $transaction->cashier->name ?? 'Kasir Tidak Ditemukan' }}</strong>
                                     </td>
                                     <td class="text-center">{{ $transaction->created_at->format('d M Y H:i') }}</td>
-                                    <td class="text-end">{{ number_format($transaction->total_amount, 0, ',', '.') }}</td>
+                                    <td class="text-end">
+                                        Rp {{ number_format((float) rsa_decrypt($transaction->total_amount), 0, '.', ',') }}
+                                    </td>
                                     <td class="text-center">
                                         @if ($transaction->payment_method == 'cash')
                                             <span class="badge bg-success">Tunai</span>
