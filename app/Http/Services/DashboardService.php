@@ -16,7 +16,7 @@ class DashboardService
     // AES Encryption Trait
     use \App\Traits\HasAesEncryption;
     // RSA Encryption Trait
-    use \App\Traits\HasRSAEncryption;
+    use \App\Traits\HasRsaEncryption;
 
     /**
      * Get the count of all transactions.

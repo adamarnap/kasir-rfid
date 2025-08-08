@@ -86,6 +86,18 @@ class NavigationSeeder extends Seeder
                 'active' => true,
                 'display' => true,
             ],
+            /* Cek Saldo */
+            [
+                'id' => 14,
+                'name' => 'Cek Saldo',
+                'url' => 'balance.index',
+                'slug' => 'balance',
+                'icon' => 'bi bi-cash-stack',
+                'order' => 6,
+                'parent_id' => null,
+                'active' => true,
+                'display' => true,
+            ],
             /* Master Data */
             [
                 'id' => 5,
@@ -93,7 +105,7 @@ class NavigationSeeder extends Seeder
                 'url' => '#',
                 'slug' => 'master',
                 'icon' => 'bi bi-database',
-                'order' => 6,
+                'order' => 7,
                 'parent_id' => null,
                 'active' => true,
                 'display' => true,
@@ -150,7 +162,7 @@ class NavigationSeeder extends Seeder
                 'url' => '#',
                 'slug' => 'report',
                 'icon' => 'bi bi-file-earmark-text',
-                'order' =>  7,
+                'order' =>  8,
                 'parent_id' => null,
                 'active' => true,
                 'display' => true,

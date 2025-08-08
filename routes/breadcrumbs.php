@@ -64,6 +64,14 @@ Breadcrumbs::for('rfid', function (BreadcrumbTrail $trail) {
 
 /**
  * ------------------------------------------------------------------------------------------------------------------------
+ * Balance
+ */
+Breadcrumbs::for('balance', function (BreadcrumbTrail $trail) {
+    $trail->push('Cek Saldo', route('balance.index'));
+});
+
+/**
+ * ------------------------------------------------------------------------------------------------------------------------
  * Master
  */
 

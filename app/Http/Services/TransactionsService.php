@@ -15,7 +15,7 @@ class TransactionsService
     // AES Encryption Trait
     use \App\Traits\HasAesEncryption;
     // RSA Encryption Trait
-    use \App\Traits\HasRSAEncryption;
+    use \App\Traits\HasRsaEncryption;
 
 
     /* Check if transaction ID is available */

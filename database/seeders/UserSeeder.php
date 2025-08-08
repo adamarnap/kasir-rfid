@@ -42,6 +42,7 @@ class UserSeeder extends Seeder
             'roles.read', 'roles.create', 'roles.update', 'roles.delete',
             'navs.read', 'navs.create', 'navs.update', 'navs.delete',
             'preferences.read', 'preferences.create', 'preferences.update', 'preferences.delete',
+            'balance.read', 'balance.create', 'balance.update', 'balance.delete',
         ];
 
         // Buat permission jika belum ada
@@ -83,6 +84,7 @@ class UserSeeder extends Seeder
             'settings.read', 'settings.create', 'settings.update', 'settings.delete',
             'users.read', 'users.create', 'users.update', 'users.delete',
             'roles.read', 'roles.create', 'roles.update', 'roles.delete',
+            'balance.read', 'balance.create', 'balance.update', 'balance.delete',
         ];
         // SYNC PERMISSIONS FOR ADMIN ROLE
         $roleAdmin->syncPermissions($adminPermissions);
@@ -103,6 +105,7 @@ class UserSeeder extends Seeder
             'report-transactions.read', 'report-transactions.create', 'report-transactions.update', 'report-transactions.delete',
             'report-topup.read', 'report-topup.create', 'report-topup.update', 'report-topup.delete',
             'profile.read', 'profile.create', 'profile.update', 'profile.delete',
+            'balance.read', 'balance.create', 'balance.update', 'balance.delete',
         ];
 
         // SYNC PERMISSIONS FOR CASHIER ROLE

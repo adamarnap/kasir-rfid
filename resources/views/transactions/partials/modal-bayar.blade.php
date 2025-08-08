@@ -107,9 +107,9 @@
 
                 // Handle done button click for RFID payment method
                 if (!window.rfidListenerInitialized) {
-                handleDoneButtonClickForRfidPaymentMethod();
-                window.rfidListenerInitialized = true;
-            }
+                    handleDoneButtonClickForRfidPaymentMethod();
+                    window.rfidListenerInitialized = true;
+                }
             } else {
                 rfidNumberInput.value = ''; // Clear input if not using RFID
                 rfidPinInput.value = ''; // Clear PIN input if not using RFID

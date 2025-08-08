@@ -218,13 +218,13 @@ if (!function_exists('getDefaultTheme')) {
     }
 }
 
-use App\Traits\HasRSAEncryption;
+use App\Traits\HasRsaEncryption;
 
 if (!function_exists('rsa_decrypt')) {
     function rsa_decrypt($value)
     {
         $trait = new class {
-            use HasRSAEncryption;
+            use HasRsaEncryption;
         };
         return $trait->rsaDecrypt($value);
     }

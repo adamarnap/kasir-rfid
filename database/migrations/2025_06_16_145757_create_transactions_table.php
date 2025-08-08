@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cashier_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade')->comment('ID dari kasir yang melakukan transaksi');
             $table->foreignId('student_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade')->comment('ID dari siswa yang melakukan transaksi');
-            $table->decimal('total_amount', 10, 2)->comment('Jumlah total transaksi');
+            $table->longText('total_amount')->comment('Jumlah total transaksi');
             $table->enum('payment_method', ['cash', 'rfid'])->default('cash')->comment('Metode pembayaran yang digunakan');
             $table->timestamps();
         });

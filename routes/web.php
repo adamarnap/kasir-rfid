@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\RfidController;
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\Operator\HomeController;
@@ -48,12 +49,14 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::delete('transactions/{transactionId}', [TransactionsController::class, 'destroy'])->name('transactions.destroy');
     Route::get('active-transactions', [ActiveTransactionsController::class, 'index'])->name('active-transactions.index');
 
-
     /* ---- Kartu RFID */
     Route::resource('/rfid', RfidController::class)->names('rfid');
 
     /* ---- Top Up */
     Route::resource('/topup', TopupController::class)->names('topup');
+
+    /* ---- Cek Saldo */
+    Route::resource('/balance', BalanceController::class)->names('balance');
 
     /* ---- Master Data */
     Route::prefix('master')->name('master.')->group(function () {

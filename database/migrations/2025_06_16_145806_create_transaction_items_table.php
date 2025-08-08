@@ -24,7 +24,7 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->comment('ID dari produk yang terkait dengan item ini');
             $table->integer('quantity')->default(1)->comment('Jumlah produk yang dibeli dalam transaksi ini');
-            $table->decimal('product_price', 10, 2)->comment('Harga produk pada saat transaksi');                    
+            $table->longText('product_price')->comment('Harga produk pada saat transaksi');
             $table->timestamps();
         });
     }
