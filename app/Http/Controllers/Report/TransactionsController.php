@@ -24,9 +24,24 @@ class TransactionsController extends Controller
         $datas = $this->transactionsService->getAllTransactions();
 
         $transactions = $datas['transactions'];
+        $students = $datas['students'];
         $isStudentOrParent = $datas['isStudentOrParent'];
 
-        return view('report.transactions.index', compact('transactions', 'isStudentOrParent'));
+        if($isStudentOrParent) {
+            return view('report.transactions.index-student-or-parent', compact('transactions'));
+        }
+
+        return view('report.transactions.index-cashier', compact('transactions', 'students', 'isStudentOrParent'));
+    }
+
+    public function show($studentId)
+    {
+        $this->setRule('report-transactions.read');
+
+        // Get data
+        $transactions = $this->transactionsService->getTransactionByStudentId($studentId);
+        $student = $this->transactionsService->getStudentById($studentId);
+        return view('report.transactions.show-transaction-by-student-id', compact('transactions', 'student'));
     }
 
 }

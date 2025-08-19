@@ -1,9 +1,9 @@
 @extends('layouts.custom-template.main')
 
-@section('title', 'Laporan Transaksi')
+@section('title', 'Detail Transaksi - ' . $student->userData->name)
 
 @section('breadcrumb')
-    {{ Breadcrumbs::render('report.transactions') }}
+    {{ Breadcrumbs::render('report.transactions.show', $student) }}
 @endsection
 
 @section('content')
@@ -15,9 +15,6 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
-                                @if (!$isStudentOrParent)
-                                    <th>Nama Siswa <br> NISN</th>
-                                @endif
                                 <th class="text-end">Total Tagihan</th>
                                 <th class="text-center">Metode Pembayaran</th>
                                 <th class="text-center">Tgl. Transaksi</th>
@@ -31,13 +28,6 @@
                             @foreach ($transactions as $key => $transaction)
                                 <tr>
                                     <td class="text-center">{{ $key + 1 }}</td>
-                                    @if (!$isStudentOrParent)
-                                        <td>
-                                            <strong>{{ $transaction->student->userData->name ?? 'Transaksi Draft' }}</strong>
-                                            <br> 
-                                            {{ $transaction->student->nisn ?? '' }}
-                                        </td>
-                                    @endif
                                     <td class="text-end">{{ number_format((float) rsa_decrypt($transaction->total_amount), 0, ',', '.') }}</td>
                                     <td class="text-center">
                                         @if ($transaction->payment_method == 'cash')
@@ -75,7 +65,7 @@
     </div>
 
     {{-- Include show modal --}}
-    @include('report.transactions.partials.modal-show')
+    @include('report.transactions.partials.modal-show-transaction-items')
 @endsection
 
 @push('scripts')

@@ -118,6 +118,12 @@ Breadcrumbs::for('report.transactions', function (BreadcrumbTrail $trail) {
     $trail->push('Riwayat Transaksi', route('report.transactions.index'));
 });
 
+// Report > Transactions > Show
+Breadcrumbs::for('report.transactions.show', function (BreadcrumbTrail $trail, $student) {
+    $trail->parent('report.transactions');
+    $trail->push("Detail Transaksi Siswa - {$student->userData->name}", route('report.transactions.show', $student->student_id));
+});
+
 // Report > TopUp
 Breadcrumbs::for('report.topup', function (BreadcrumbTrail $trail) {
     $trail->parent('reports');

@@ -40,4 +40,10 @@ class StudentAccounts extends Model
         return $this->hasMany(TopUpTransactions::class, 'student_id', 'student_id');
     }
 
+    /* Relationship with Transactions */
+    public function transactions()
+    {
+        return $this->hasMany(Transactions::class, 'student_id', 'student_id');
+    }
+
 }
