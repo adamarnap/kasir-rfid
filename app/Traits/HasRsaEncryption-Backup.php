@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait HasRsaEncryption
+trait HasRsaEncryptionBackup
 {
     protected function ensureRSAKeysExist()
     {
