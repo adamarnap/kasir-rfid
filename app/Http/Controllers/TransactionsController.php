@@ -127,4 +127,44 @@ class TransactionsController extends Controller
         $activeTransactions = $this->transactionsService->getActiveTransactions();
         return view('transactions.active', compact('activeTransactions'));
     }
+
+    /**
+     * Get RSA encryption settings.
+     */
+    public function getRsaSettings()
+    {
+        $this->setRule('transactions.read');
+        $settings = $this->transactionsService->getRsaSettings();
+        return response()->json($settings);
+    }
+
+    /**
+     * Update RSA encryption settings.
+     */
+    public function updateRsaSettings(Request $request)
+    {
+        $this->setRule('transactions.update');
+        
+        // Validate request
+        $dataValidated = $request->validate([
+            'n' => 'required|string',
+            'd' => 'required|string',
+            'e' => 'required|string',
+        ]);
+
+        // Update RSA settings
+        $updated = $this->transactionsService->updateRsaSettings($dataValidated);
+
+        if ($updated) {
+            return response()->json([
+                'success' => true,
+                'message' => 'RSA encryption settings updated successfully.'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to update RSA encryption settings.'
+        ], 500);
+    }
 }

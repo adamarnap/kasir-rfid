@@ -29,8 +29,8 @@
                                 </tr>
                             @endforeach
                             <tr>
-                                <td colspan="4" class="text-end"><strong>Total:</strong></td>
-                                <td class="text-end"><strong>Rp. {{ number_format((float) rsa_decrypt($transaction->total_amount), 0, ',', '.') }}</strong></td>
+                                <td colspan="3" class="text-end"><strong>Total</strong></td>
+                                <td class="text-end"><strong>Rp. {{ number_format((float) simple_rsa_decrypt($transaction->total_amount), 0, ',', '.') }}</strong></td>
                             </tr>
                         </tbody>
                     </table>

@@ -219,6 +219,8 @@ if (!function_exists('getDefaultTheme')) {
 }
 
 use App\Traits\HasRsaEncryption;
+use App\Support\SimpleRSA;
+use App\Models\Preference;
 
 if (!function_exists('rsa_decrypt')) {
     function rsa_decrypt($value)
@@ -227,5 +229,59 @@ if (!function_exists('rsa_decrypt')) {
             use HasRsaEncryption;
         };
         return $trait->rsaDecrypt($value);
+    }
+}
+
+if (!function_exists('simple_rsa_encrypt')) {
+    /**
+     * Encrypt using SimpleRSA with keys from database
+     * 
+     * @param string $plaintext
+     * @return string
+     */
+    function simple_rsa_encrypt(string $plaintext): string
+    {
+        try {
+            $n = Preference::where('name', 'rsa_n')->value('value');
+            $d = Preference::where('name', 'rsa_d')->value('value');
+            $e = Preference::where('name', 'rsa_e')->value('value');
+
+            if (!$n || !$d || !$e) {
+                throw new \RuntimeException('RSA keys not configured');
+            }
+
+            $rsa = new SimpleRSA($n, $d, $e);
+            return $rsa->encrypt($plaintext);
+        } catch (\Exception $e) {
+            \Log::error('SimpleRSA encryption failed: ' . $e->getMessage());
+            return $plaintext; // Return original text if encryption fails
+        }
+    }
+}
+
+if (!function_exists('simple_rsa_decrypt')) {
+    /**
+     * Decrypt using SimpleRSA with keys from database
+     * 
+     * @param string $ciphertext
+     * @return string
+     */
+    function simple_rsa_decrypt(string $ciphertext): string
+    {
+        try {
+            $n = Preference::where('name', 'rsa_n')->value('value');
+            $d = Preference::where('name', 'rsa_d')->value('value');
+            $e = Preference::where('name', 'rsa_e')->value('value');
+
+            if (!$n || !$d || !$e) {
+                throw new \RuntimeException('RSA keys not configured');
+            }
+
+            $rsa = new SimpleRSA($n, $d, $e);
+            return $rsa->decrypt($ciphertext);
+        } catch (\Exception $e) {
+            \Log::error('SimpleRSA decryption failed: ' . $e->getMessage());
+            return $ciphertext; // Return original text if decryption fails
+        }
     }
 }

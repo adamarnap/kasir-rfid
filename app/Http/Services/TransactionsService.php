@@ -2,20 +2,79 @@
 
 namespace App\Http\Services;
 
+use App\Models\Preference;
 use App\Models\Products;
 use App\Models\RfidCards;
 use App\Models\Transactions;
 use App\Models\TransactionItems;
+use App\Support\SimpleRSA;
 use Illuminate\Support\Facades\Storage;
 
 class TransactionsService
 {
-
-    
     // AES Encryption Trait
     use \App\Traits\HasAesEncryption;
     // RSA Encryption Trait
     use \App\Traits\HasRsaEncryption;
+
+    /**
+     * Get SimpleRSA instance from database keys
+     */
+    protected function getSimpleRSA(): SimpleRSA
+    {
+        $n = Preference::where('name', 'rsa_n')->value('value');
+        $d = Preference::where('name', 'rsa_d')->value('value');
+        $e = Preference::where('name', 'rsa_e')->value('value');
+
+        if (!$n || !$d || !$e) {
+            throw new \RuntimeException('RSA keys not found in database. Please configure encryption settings.');
+        }
+
+        return new SimpleRSA($n, $d, $e);
+    }
+
+    /**
+     * Encrypt using SimpleRSA
+     */
+    protected function simpleRsaEncrypt(string $plaintext): string
+    {
+        return $this->getSimpleRSA()->encrypt($plaintext);
+    }
+
+    /**
+     * Decrypt using SimpleRSA
+     */
+    protected function simpleRsaDecrypt(string $ciphertext): string
+    {
+        return $this->getSimpleRSA()->decrypt($ciphertext);
+    }
+
+    /**
+     * Get RSA settings
+     */
+    public function getRsaSettings(): array
+    {
+        return [
+            'n' => Preference::where('name', 'rsa_n')->value('value') ?? '',
+            'd' => Preference::where('name', 'rsa_d')->value('value') ?? '',
+            'e' => Preference::where('name', 'rsa_e')->value('value') ?? '',
+        ];
+    }
+
+    /**
+     * Update RSA settings
+     */
+    public function updateRsaSettings(array $data): bool
+    {
+        try {
+            Preference::where('name', 'rsa_n')->update(['value' => $data['n']]);
+            Preference::where('name', 'rsa_d')->update(['value' => $data['d']]);
+            Preference::where('name', 'rsa_e')->update(['value' => $data['e']]);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 
 
     /* Check if transaction ID is available */
@@ -78,7 +137,7 @@ class TransactionsService
             // Create a new transaction
             $transaction = Transactions::create([
                 'cashier_id' => auth()->id(),
-                'total_amount' => $this->rsaEncrypt($product->price),
+                'total_amount' => $this->simpleRsaEncrypt($product->price),
                 'payment_method' => 'rfid', // Default payment method
                 'status' => 'draft', // Default status
             ]);
@@ -87,7 +146,53 @@ class TransactionsService
             $transaction->items()->create([
                 'product_id' => $product->id,
                 'quantity' => 1, // Default quantity
-                'product_price' => $this->rsaEncrypt($product->price),
+                'product_price' => $this->simpleRsaEncrypt($product->price),
+            ]);
+
+            // Update product stock
+            $product->stock -= 1; // Decrease stock by 1
+            $product->save();
+
+            // Commit the transaction
+            \DB::commit();
+
+            return redirect()->route('transactions.index', $transaction->id)->with('success', 'Transaction created successfully.');
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return redirect()->back()->with('error', 'Failed to create transaction: ' . $e->getMessage());
+        }
+    }
+
+    /* Store New Transaction */
+    public function storeNewTransaction_old(array $dataValidated)
+    {
+        // Product data
+        $product = Products::find($dataValidated['product_id']);
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product not found.');
+        }
+
+        // Validate product quantity
+        if ($product->stock < 1) {
+            return redirect()->back()->with('error', 'Insufficient stock for product: ' . $product->name);
+        }
+        try {
+            // Start a transaction
+            \DB::beginTransaction();
+
+            // Create a new transaction
+            $transaction = Transactions::create([
+                'cashier_id' => auth()->id(),
+                'total_amount' => $this->simpleRsaEncrypt($product->price),
+                'payment_method' => 'rfid', // Default payment method
+                'status' => 'draft', // Default status
+            ]);
+
+            // Add selected product to transaction items
+            $transaction->items()->create([
+                'product_id' => $product->id,
+                'quantity' => 1, // Default quantity
+                'product_price' => $this->simpleRsaEncrypt($product->price),
             ]);
 
             // Update product stock
@@ -138,7 +243,7 @@ class TransactionsService
             $transaction->items()->create([
                 'product_id' => $product->id,
                 'quantity' => 1, // Default quantity
-                'product_price' => $this->rsaEncrypt($product->price),
+                'product_price' => $this->simpleRsaEncrypt($product->price),
             ]);
 
             // Update product stock
@@ -146,12 +251,12 @@ class TransactionsService
             $product->save();
 
             // Update the transaction total amount
-            $decrypted = (float) $this->rsaDecrypt($transaction->total_amount);
+            $decrypted = (float) $this->simpleRsaDecrypt($transaction->total_amount);
             $productPrice = (float) $product->price;
 
             $total = $decrypted + $productPrice;
 
-            $transaction->total_amount = $this->rsaEncrypt($total);
+            $transaction->total_amount = $this->simpleRsaEncrypt($total);
             $transaction->save();
 
             // Commit the transaction
@@ -193,13 +298,13 @@ class TransactionsService
             // Update the transaction item
             $transactionItem->update([
                 'quantity' => $dataValidated['quantity'],
-                'product_price' => $this->rsaEncrypt($product->price), // Update price if needed
+                'product_price' => $this->simpleRsaEncrypt($product->price), // Update price if needed
             ]);
 
             // Update the transaction total amount
             $transaction = $transactionItem->transaction;
-            $transaction->total_amount = $this->rsaEncrypt($transaction->items->sum(function ($item) {
-                return $item->quantity * (float) $this->rsaDecrypt($item->product_price);
+            $transaction->total_amount = $this->simpleRsaEncrypt($transaction->items->sum(function ($item) {
+                return $item->quantity * (float) $this->simpleRsaDecrypt($item->product_price);
             }));
             $transaction->save();
             
@@ -255,8 +360,8 @@ class TransactionsService
             }
 
             // Update the transaction total amount
-            $transaction->total_amount = $this->rsaEncrypt( $transaction->items->sum(function ($item) {
-                return $item->quantity * (float) $this->rsaDecrypt($item->product_price);
+            $transaction->total_amount = $this->simpleRsaEncrypt( $transaction->items->sum(function ($item) {
+                return $item->quantity * (float) $this->simpleRsaDecrypt($item->product_price);
             }));
             $transaction->save();
 
@@ -394,7 +499,7 @@ class TransactionsService
             // If payment method is RFID, update the RFID card status
             if ($paymentMethod === 'rfid') {
                 // Deduct the transaction amount from the RFID card balance
-                $rfidCard->studentAccount->balance -= (float) $this->rsaDecrypt($transaction->total_amount);
+                $rfidCard->studentAccount->balance -= (float) $this->simpleRsaDecrypt($transaction->total_amount);
 
                 // Check if the balance is sufficient
                 if ($rfidCard->studentAccount->balance < 0) {

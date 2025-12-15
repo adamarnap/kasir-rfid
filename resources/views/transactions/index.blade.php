@@ -7,6 +7,16 @@
 @endsection
 
 @section('content')
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-end">
+            @can('transactions.update')
+                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#rsaSettingsModal">
+                    <i class="bi bi-gear-fill"></i> Pengaturan Enkripsi RSA
+                </button>
+            @endcan
+        </div>
+    </div>
+
     <div class="row">
         {{-- Start table items list --}}
         <div class="col-8">
@@ -66,10 +76,10 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td class="text-start">{{ $item->product->name ?? '-' }}</td>
                                     <td class="text-center">{{ $item->product->category->name ?? '-' }}</td>
-                                    <td class="text-end">Rp {{ number_format((float) rsa_decrypt($item->product_price), 0, '.', ',') }}</td>
+                                    <td class="text-end">Rp {{ number_format((float) simple_rsa_decrypt($item->product_price), 0, '.', ',') }}</td>
                                     <td class="text-center">{{ $item->quantity }}</td>
                                     <td class="text-end">Rp
-                                        {{ number_format((float) rsa_decrypt($item->product_price) * $item->quantity, 0, '.', ',') }}</td>
+                                        {{ number_format((float) simple_rsa_decrypt($item->product_price) * $item->quantity, 0, '.', ',') }}</td>
                                     <td class="text-center">
                                         @can('transactions.update')
                                             {{-- Edit --}}
@@ -118,7 +128,7 @@
                         {{-- Kotak harga seperti layar kalkulator --}}
                         <div class="bg- text-success py-4 px-3 mb-4 rounded" style="border: 2px solid #28a745;">
                             <h1 class="display-3 font-weight-bold m-0">
-                                Rp {{ number_format((float) rsa_decrypt($chart->total_amount) ?? 0, 0, '.', ',') }}
+                                Rp {{ number_format((float) simple_rsa_decrypt($chart->total_amount) ?? 0, 0, '.', ',') }}
                             </h1>
                         </div>
 
@@ -159,6 +169,8 @@
 
     {{-- Include Modal Edit --}}
     @include('transactions.partials.modal-edit')
+    {{-- Include Modal RSA Settings --}}
+    @include('transactions.partials.modal-rsa-settings')
     @if ($transactionId)
         {{-- Include Modal Bayar --}}
         @include('transactions.partials.modal-bayar')

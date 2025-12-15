@@ -47,6 +47,8 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::put('transactions/{transactionId}/pay', [TransactionsController::class, 'pay'])->name('transactions.pay');
     Route::delete('transactions/{transactionItemId}/delete-item', [TransactionsController::class, 'itemDestroy'])->name('transactions.item-destroy');
     Route::delete('transactions/{transactionId}', [TransactionsController::class, 'destroy'])->name('transactions.destroy');
+    Route::get('transactions-rsa-settings', [TransactionsController::class, 'getRsaSettings'])->name('transactions.rsa-settings.get');
+    Route::post('transactions-rsa-settings', [TransactionsController::class, 'updateRsaSettings'])->name('transactions.rsa-settings.update');
     Route::get('active-transactions', [ActiveTransactionsController::class, 'index'])->name('active-transactions.index');
 
     /* ---- Kartu RFID */

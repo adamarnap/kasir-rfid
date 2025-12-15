@@ -28,7 +28,7 @@
                             @foreach ($transactions as $key => $transaction)
                                 <tr>
                                     <td class="text-center">{{ $key + 1 }}</td>
-                                    <td class="text-end">{{ number_format((float) rsa_decrypt($transaction->total_amount), 0, ',', '.') }}</td>
+                                    <td class="text-end">{{ number_format((float) simple_rsa_decrypt($transaction->total_amount), 0, ',', '.') }}</td>
                                     <td class="text-center">
                                         @if ($transaction->payment_method == 'cash')
                                             <span class="badge bg-success">Tunai</span>

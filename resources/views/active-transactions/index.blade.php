@@ -38,7 +38,7 @@
                                     </td>
                                     <td class="text-center">{{ $transaction->created_at->format('d M Y H:i') }}</td>
                                     <td class="text-end">
-                                        Rp {{ number_format((float) rsa_decrypt($transaction->total_amount), 0, '.', ',') }}
+                                        Rp {{ number_format((float) simple_rsa_decrypt($transaction->total_amount), 0, '.', ',') }}
                                     </td>
                                     <td class="text-center">
                                         @if ($transaction->payment_method == 'cash')

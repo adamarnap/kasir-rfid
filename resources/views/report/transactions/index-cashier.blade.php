@@ -31,7 +31,7 @@
                                     </td>
                                     <td class="text-end">{{ $student->transactions->count() }}</td>
                                     @php
-                                        $totalAmount = $student->transactions->sum(fn($trx) => rsa_decrypt($trx->total_amount));
+                                        $totalAmount = $student->transactions->sum(fn($trx) => simple_rsa_decrypt($trx->total_amount));
                                     @endphp
                                     <td class="text-end">Rp. {{ number_format((float) $totalAmount, 0, ',', '.') }}</td>
                                     <td class="text-center">
