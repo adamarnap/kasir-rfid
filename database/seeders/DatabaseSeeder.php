@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call(NavigationSeeder::class);
         $this->call(PreferenceSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(RsaKeysSeeder::class);
     }
 }
