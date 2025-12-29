@@ -28,6 +28,7 @@ class TransactionsController extends Controller
         // Get data
         $products = $this->transactionsService->getDataAllProducts();
         $chart = $this->transactionsService->getDataAllAddedProductToChart($transactionId);
+
         return view('transactions.index', compact('products', 'chart', 'transactionId'));
     }
 

@@ -26,6 +26,15 @@ class SimpleRSA
     /** Fast modular exponentiation; gunakan GMP bila ada. */
     protected function powmod(int|string $base, int|string $exp, int|string $mod): int|string
     {
+        // Validate inputs
+        $base = trim((string)$base);
+        $exp = trim((string)$exp);
+        $mod = trim((string)$mod);
+        
+        if ($base === '' || $exp === '' || $mod === '' || !is_numeric($base) || !is_numeric($exp) || !is_numeric($mod)) {
+            throw new \RuntimeException("Invalid input for powmod: base='$base', exp='$exp', mod='$mod'");
+        }
+        
         if (function_exists('gmp_powm')) {
             return gmp_strval(gmp_powm($base, $exp, $mod));
         }
@@ -33,14 +42,14 @@ class SimpleRSA
         // fallback integer/BCMath manual
         if (function_exists('bcmod')) {
             $result = '1';
-            $base   = bcmod((string)$base, (string)$mod);
-            $e      = (string)$exp;
+            $base   = bcmod($base, $mod);
+            $e      = $exp;
             while (bccomp($e, '0') === 1) {
                 if ((int)bcmod($e, '2') === 1) {
-                    $result = bcmod(bcmul($result, $base), (string)$mod);
+                    $result = bcmod(bcmul($result, $base), $mod);
                 }
                 $e    = bcdiv($e, '2', 0);
-                $base = bcmod(bcmul($base, $base), (string)$mod);
+                $base = bcmod(bcmul($base, $base), $mod);
             }
             return (string)$result;
         }
@@ -77,9 +86,28 @@ class SimpleRSA
     /** Dekripsi dari "c0:c1:..." → string. */
     public function decrypt(string $cipherColon): string
     {
-        $parts = array_filter(explode(':', trim($cipherColon)), fn($v) => $v !== '');
+        // Trim and validate input
+        $cipherColon = trim($cipherColon);
+        if ($cipherColon === '') {
+            return '';
+        }
+        
+        // Split by colon and filter out empty values
+        $parts = array_filter(
+            explode(':', $cipherColon),
+            fn($v) => trim($v) !== '' && is_numeric(trim($v))
+        );
+        
+        if (empty($parts)) {
+            throw new \RuntimeException("Invalid cipher format: '$cipherColon'");
+        }
+        
         $chars = [];
         foreach ($parts as $c) {
+            $c = trim($c);
+            if (!is_numeric($c)) {
+                throw new \RuntimeException("Non-numeric cipher value: '$c'");
+            }
             $m = (int)$this->powmod($c, $this->d, $this->n);
             // pastikan 0<=m<=255 agar valid byte
             if ($m < 0 || $m > 255) {

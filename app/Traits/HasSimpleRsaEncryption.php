@@ -42,9 +42,26 @@ trait HasSimpleRsaEncryption
         if ($ciphertext === null || $ciphertext === '') {
             return $ciphertext;
         }
+        
         try {
+            // Check if the ciphertext looks like encrypted data (should contain colons and numbers)
+            if (!str_contains($ciphertext, ':') || !preg_match('/^\d+(:\d+)*$/', trim($ciphertext))) {
+                // If it doesn't look like encrypted data, return it as-is
+                \Log::warning("Data tidak terenkripsi ditemukan", [
+                    'model' => get_class($this),
+                    'value' => substr($ciphertext, 0, 50) . '...'
+                ]);
+                return $ciphertext;
+            }
+            
             return $this->getSimpleRSA()->decrypt($ciphertext);
         } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error("RSA Decryption Error", [
+                'error' => $e->getMessage(),
+                'model' => get_class($this),
+                'ciphertext' => substr($ciphertext, 0, 100) . '...'
+            ]);
             // If decryption fails, return original value
             return $ciphertext;
         }
