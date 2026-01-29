@@ -3,10 +3,12 @@
 namespace App\Http\Services;
 
 use App\Enums\RoleEnum;
+use App\Models\Preference;
 use App\Models\RfidCards;
 use App\Models\Transactions;
 use App\Models\ParentStudent;
 use App\Models\StudentAccounts;
+use App\Support\SimpleRSA;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -17,6 +19,38 @@ class DashboardService
     use \App\Traits\HasAesEncryption;
     // RSA Encryption Trait
     use \App\Traits\HasRsaEncryption;
+
+    /**
+     * Get SimpleRSA instance from database keys
+     */
+    protected function getSimpleRSA(): SimpleRSA
+    {
+        $n = Preference::where('name', 'rsa_n')->value('value');
+        $d = Preference::where('name', 'rsa_d')->value('value');
+        $e = Preference::where('name', 'rsa_e')->value('value');
+
+        if (!$n || !$d || !$e) {
+            throw new \RuntimeException('RSA keys not found in database. Please configure encryption settings.');
+        }
+
+        return new SimpleRSA($n, $d, $e);
+    }
+
+    /**
+     * Encrypt using SimpleRSA
+     */
+    protected function simpleRsaEncrypt(string $plaintext): string
+    {
+        return $this->getSimpleRSA()->encrypt($plaintext);
+    }
+
+    /**
+     * Decrypt using SimpleRSA
+     */
+    protected function simpleRsaDecrypt(string $ciphertext): string
+    {
+        return $this->getSimpleRSA()->decrypt($ciphertext);
+    }
 
     /**
      * Get the count of all transactions.
@@ -106,8 +140,8 @@ class DashboardService
             $totalAmountTransactions = 0;
             $countTransactions = $summaryTransactionsByStudentId->count();
             foreach($summaryTransactionsByStudentId as $transaction) {
-                // Decrypt the total amount for each transaction
-                $totalAmountTransactions += (float) $this->rsaDecrypt($transaction->total_amount);
+                // Decrypt the total amount for each transaction using SimpleRSA
+                $totalAmountTransactions += (float) $this->simpleRsaDecrypt($transaction->total_amount);
             }
 
             return [
