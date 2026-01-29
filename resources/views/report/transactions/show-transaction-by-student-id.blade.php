@@ -11,7 +11,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <table id="myTable" class="table table-striped display  nowrap" style="width:100%">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
@@ -20,15 +21,15 @@
                                 <th class="text-center">Tgl. Transaksi</th>
                                 <th class="text-center">Status Transaksi</th>
                                 <th class="text-center">Petugas Kasir</th>
-                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         
                         <tbody>
                             @foreach ($transactions as $key => $transaction)
-                                <tr>
-                                    <td class="text-center">{{ $key + 1 }}</td>
-                                    <td class="text-end">{{ number_format((float) simple_rsa_decrypt($transaction->total_amount), 0, ',', '.') }}</td>
+                                <!-- Main Transaction Row -->
+                                <tr class="table-primary">
+                                    <td class="text-center"><strong>{{ $key + 1 }}</strong></td>
+                                    <td class="text-end"><strong>Rp {{ number_format((float) simple_rsa_decrypt($transaction->total_amount), 0, ',', '.') }}</strong></td>
                                     <td class="text-center">
                                         @if ($transaction->payment_method == 'cash')
                                             <span class="badge bg-success">Tunai</span>
@@ -47,33 +48,50 @@
                                     <td class="text-center">
                                         {{ $transaction->cashier->name ?? '-' }}
                                     </td>
-                                    <td class="text-center">
-                                        @can('report-transactions.read')
-                                            <a  class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#showModal_{{ $transaction->id }}">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                        @endcan
+                                </tr>
+                                
+                                <!-- Detail Items Row -->
+                                <tr>
+                                    <td colspan="6" class="p-0">
+                                        <div class="bg-light p-3">
+                                            <h6 class="mb-2"><i class="bi bi-list-ul"></i> Detail Produk:</h6>
+                                            <table class="table table-sm table-bordered mb-0">
+                                                <thead class="table-secondary">
+                                                    <tr>
+                                                        <th class="text-center" style="width: 50px;">No</th>
+                                                        <th>Nama Produk</th>
+                                                        <th class="text-end" style="width: 150px;">Harga Satuan</th>
+                                                        <th class="text-center" style="width: 100px;">Jumlah</th>
+                                                        <th class="text-end" style="width: 150px;">Total Harga</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($transaction->items as $itemKey => $item)
+                                                        <tr>
+                                                            <td class="text-center">{{ $itemKey + 1 }}</td>
+                                                            <td>{{ $item->product->name }}</td>
+                                                            <td class="text-end">Rp {{ number_format((float) simple_rsa_decrypt($item->product_price), 0, ',', '.') }}</td>
+                                                            <td class="text-center">{{ $item->quantity }}</td>
+                                                            <td class="text-end">Rp {{ number_format(((float) simple_rsa_decrypt($item->product_price) * $item->quantity), 0, ',', '.') }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                    <tr class="table-info">
+                                                        <td colspan="4" class="text-end"><strong>Total Keseluruhan:</strong></td>
+                                                        <td class="text-end"><strong>Rp {{ number_format((float) simple_rsa_decrypt($transaction->total_amount), 0, ',', '.') }}</strong></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
 
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    {{-- Include show modal --}}
-    @include('report.transactions.partials.modal-show-transaction-items')
 @endsection
-
-@push('scripts')
-    <script>
-        $('#myTable').DataTable({
-            responsive: true,
-            "pageLength": 50
-        });
-    </script>
-@endpush
 

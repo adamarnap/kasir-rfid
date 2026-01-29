@@ -180,4 +180,39 @@ class DashboardService
         }
         return [];
     }
+
+    /**
+     * Get student info by student ID for Student and Parent roles.
+     *
+     * @return \App\Models\StudentAccounts|null
+     */
+    public function getStudentInfo()
+    {
+        $isStudentOrParent = $this->checkIsStudentOrParent();
+
+        if ($isStudentOrParent) {
+            // If user logged in as Student then get Student ID from User ID
+            if (auth()->user()->hasRole(RoleEnum::STUDENT->value)) {
+                $studentId = auth()->user()->id;
+            }
+            // If user logged in as Parent then get Student ID from Parent relationship
+            else if (auth()->user()->hasRole(RoleEnum::PARENT->value)) {
+                $studentId = auth()->user()->parent->student_id ?? null;
+            }
+
+            // Fetch the student info with user data, rfid cards, and transactions
+            return StudentAccounts::with([
+                'userData',
+                'rfidCards',
+                'transactions' => function($query) {
+                    $query->latest()->take(5);
+                },
+                'TopUpTransactions' => function($query) {
+                    $query->latest()->take(5);
+                }
+            ])->where('student_id', $studentId)->first();
+        }
+        
+        return null;
+    }
 }

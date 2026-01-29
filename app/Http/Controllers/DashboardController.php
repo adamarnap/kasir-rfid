@@ -26,7 +26,8 @@ class DashboardController extends Controller
         $isStudentOrParent = $this->dashboardService->checkIsStudentOrParent();
         $summaryTransactionsByStudentId = $this->dashboardService->getSummaryTransactionsByStudentId();
         $studentBalanceByStudentId = $this->dashboardService->getStudentBalanceByStudentId();
-        // dd($summaryTransactionsByStudentId);
+        $studentInfo = $this->dashboardService->getStudentInfo();
+        
         return view('dashboard.index', compact(
             'countAllTransactions',
             'countDraftTransactions',
@@ -36,7 +37,8 @@ class DashboardController extends Controller
             'countRfidCards',
             'isStudentOrParent',
             'summaryTransactionsByStudentId',
-            'studentBalanceByStudentId'
+            'studentBalanceByStudentId',
+            'studentInfo'
         ));
     }
 

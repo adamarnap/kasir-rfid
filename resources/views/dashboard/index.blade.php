@@ -7,6 +7,107 @@
 @endsection
 
 @section('content')
+    {{-- User Info Card --}}
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-1">
+                                <i class="bi bi-person-badge"></i> {{ auth()->user()->name }}
+                            </h5>
+                            <p class="mb-1">
+                                <span class="badge bg-info">
+                                    <i class="bi bi-shield-check"></i> 
+                                    {{ ucfirst(auth()->user()->roles->first()->name ?? 'User') }}
+                                </span>
+                                <span class="text-muted ms-2">
+                                    <i class="bi bi-envelope"></i> {{ auth()->user()->email }}
+                                </span>
+                            </p>
+                            
+                            @if ($isStudentOrParent && $studentInfo)
+                                <div class="mt-3 p-3 bg-light rounded border">
+                                    <h6 class="mb-3">
+                                        <i class="bi bi-mortarboard-fill text-primary"></i> 
+                                        <strong>Data Siswa yang Diampu</strong>
+                                    </h6>
+                                    
+                                    <div class="row g-3">
+                                        {{-- Kolom Kiri --}}
+                                        <div class="col-md-6">
+                                            <table class="table table-sm table-borderless mb-0">
+                                                <tr>
+                                                    <td style="width: 40%;"><strong>Nama Lengkap:</strong></td>
+                                                    <td>{{ $studentInfo->userData->name ?? '-' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Email:</strong></td>
+                                                    <td>{{ $studentInfo->userData->email ?? '-' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Kelas:</strong></td>
+                                                    <td><span class="badge bg-warning text-dark">{{ $studentInfo->kelas ?? '-' }}</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Status:</strong></td>
+                                                    <td>
+                                                        @if($studentInfo->status == 'active')
+                                                            <span class="badge bg-success">Aktif</span>
+                                                        @else
+                                                            <span class="badge bg-secondary">{{ ucfirst($studentInfo->status ?? '-') }}</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        
+                                        {{-- Kolom Kanan --}}
+                                        <div class="col-md-6">
+                                            <table class="table table-sm table-borderless mb-0">
+                                                <tr>
+                                                    <td style="width: 40%;"><strong>Saldo RFID:</strong></td>
+                                                    <td><span class="badge bg-success">Rp {{ number_format($studentInfo->balance ?? 0, 0, ',', '.') }}</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Total Transaksi:</strong></td>
+                                                    <td>{{ $studentInfo->transactions->count() ?? 0 }} transaksi</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Total Top Up:</strong></td>
+                                                    <td>{{ $studentInfo->TopUpTransactions->count() ?? 0 }} kali</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Terdaftar:</strong></td>
+                                                    <td>{{ $studentInfo->created_at ? $studentInfo->created_at->format('d M Y') : '-' }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                    @if(auth()->user()->hasRole(\App\Enums\RoleEnum::PARENT->value))
+                                        <div class="mt-2 pt-2 border-top">
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle"></i> 
+                                                Hubungan: <strong>{{ ucfirst(auth()->user()->parent->relationship->value ?? '-') }}</strong>
+                                            </small>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @if ($isStudentOrParent)
         {{-- Student & Parent --}}
         <div class="row">
